@@ -119,6 +119,7 @@
   "playlistVideos": "Soittolistavideot",
   "noPlaylistItems": "Soittolistan kohteita ei ole vielä synkronoitu.",
   "playlist": "Soittolista",
+  "viewFullPlaylist": "Näytä koko soittolista",
   "invalidVideo": "Virheellinen videolinkki",
   "loadingVideo": "Ladataan videota…",
   "videoOpenFailed": "Videota ei voi avata",

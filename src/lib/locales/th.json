@@ -119,6 +119,7 @@
   "playlistVideos": "เพลย์ลิสต์วิดีโอ",
   "noPlaylistItems": "ยังไม่มีรายการเพลย์ลิสต์ที่ซิงค์",
   "playlist": "เพลย์ลิสต์",
+  "viewFullPlaylist": "ดูเพลย์ลิสต์ทั้งหมด",
   "invalidVideo": "ลิงก์วิดีโอไม่ถูกต้อง",
   "loadingVideo": "กำลังโหลดวิดีโอ...",
   "videoOpenFailed": "ไม่สามารถเปิดวิดีโอได้",

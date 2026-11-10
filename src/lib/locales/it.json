@@ -119,6 +119,7 @@
   "playlistVideos": "Video della playlist",
   "noPlaylistItems": "Nessun elemento della playlist è stato ancora sincronizzato.",
   "playlist": "Playlist",
+  "viewFullPlaylist": "Visualizza la playlist completa",
   "invalidVideo": "Collegamento video non valido",
   "loadingVideo": "Caricamento video...",
   "videoOpenFailed": "Impossibile aprire il video",

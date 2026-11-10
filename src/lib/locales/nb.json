@@ -119,6 +119,7 @@
   "playlistVideos": "Spilleliste videoer",
   "noPlaylistItems": "Ingen spillelisteelementer er synkronisert ennå.",
   "playlist": "Spilleliste",
+  "viewFullPlaylist": "Se hele spillelisten",
   "invalidVideo": "Ugyldig videolink",
   "loadingVideo": "Laster inn video …",
   "videoOpenFailed": "Kan ikke åpne videoen",

@@ -119,6 +119,7 @@
   "playlistVideos": "Vidéos de la liste de lecture",
   "noPlaylistItems": "Aucun élément de la playlist n'a encore été synchronisé.",
   "playlist": "Liste de lecture",
+  "viewFullPlaylist": "Voir la playlist complète",
   "invalidVideo": "Lien vidéo invalide",
   "loadingVideo": "Chargement de la vidéo…",
   "videoOpenFailed": "Impossible d'ouvrir la vidéo",

@@ -119,6 +119,7 @@
   "playlistVideos": "Playlist videos",
   "noPlaylistItems": "No playlist items have synced yet.",
   "playlist": "Playlist",
+  "viewFullPlaylist": "View full playlist",
   "invalidVideo": "Invalid video link",
   "loadingVideo": "Loading video…",
   "videoOpenFailed": "Cannot open video",

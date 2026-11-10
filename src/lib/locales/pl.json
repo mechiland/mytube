@@ -119,6 +119,7 @@
   "playlistVideos": "Filmy z playlisty",
   "noPlaylistItems": "Żadne elementy listy odtwarzania nie zostały jeszcze zsynchronizowane.",
   "playlist": "Lista odtwarzania",
+  "viewFullPlaylist": "Zobacz całą playlistę",
   "invalidVideo": "Nieprawidłowy link do filmu",
   "loadingVideo": "Ładowanie wideo…",
   "videoOpenFailed": "Nie można otworzyć wideo",
