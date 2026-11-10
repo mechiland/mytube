@@ -1,6 +1,6 @@
 import { Link, Outlet, useLocation, useNavigate } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider, useQueries } from '@tanstack/react-query'
-import { Bookmark, Clock3, House, LibraryBig, ListVideo, Menu, Plus, Search, Settings2, TvMinimalPlay, X } from 'lucide-react'
+import { Bookmark, Clock3, House, ListVideo, Menu, Plus, Search, Settings2, TvMinimalPlay, X } from 'lucide-react'
 import { createContext, lazy, Suspense, useContext, useEffect, useState, type FormEvent } from 'react'
 import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group'
@@ -93,18 +93,15 @@ function Shell() {
         <div className="top-actions">
           <Button variant="ghost" size="icon" className="mobile-search" aria-label={t('openSearch')} onClick={() => setSearchOpen(v => !v)}>{searchOpen ? <X /> : <Search />}</Button>
           <Button variant="soft" className="add-button" aria-label={t('addContent')} onClick={() => setAdd(true)}><Plus data-icon="inline-start" /><span>{t('addContent')}</span></Button>
-          <Button variant="ghost" size="icon" className="header-settings" nativeButton={false} render={<Link to="/settings" aria-label={t('settings')} />}><Settings2 /></Button>
         </div>
       </header>
       {mobile && <button className="nav-scrim" onClick={() => setMobile(false)} aria-label={t('closeNavigation')} />}
       <aside className={mobile ? 'sidebar mobile-open' : 'sidebar'}>
         <nav aria-label={t('libraryNavigation')}>
-          <div className="nav-kicker"><LibraryBig />{t('myLibrary')}</div>
           {sections.map(({ to, icon: Icon, label }) => <Link key={to} to={to} activeOptions={{ exact: true, includeSearch: false }}
             activeProps={{ className: 'nav-active' }} className="nav-item" title={t(label)} onClick={() => setMobile(false)}><Icon /><span>{t(label)}</span></Link>)}
         </nav>
         {rail && !watch && <SavedChannelShortcuts close={() => setMobile(false)} />}
-        <div className="sidebar-note">{t('personalLibrary')} <span>·</span> {t('browserOnly')}</div>
       </aside>
       <main className="app-main" id="content">
         {error && <Notice title={t('localDataUnavailable')} error={new MessageError('storagePermissions')} />}

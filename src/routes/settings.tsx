@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Download, HardDrive, Trash2, Upload } from 'lucide-react'
+import { Download, Trash2, Upload } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -46,8 +46,7 @@ function Settings() {
     finally { if (file.current) file.current.value = '' }
   }
   return <section className="page settings-page">
-    <header className="page-heading"><p className="eyebrow"><HardDrive /> {t('browserOnly')}</p><h1>{t('settings')}</h1>
-      <p className="muted">{t('settingsHelp')}</p></header>
+    <header className="page-heading"><h1>{t('settings')}</h1></header>
     {!ready ? <Loading /> : <>
       <section className="settings-section"><h2>{t('appearancePlayback')}</h2>
         <div className="settings-row"><label htmlFor="language">{t('language')}</label>
