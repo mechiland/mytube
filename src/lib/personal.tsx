@@ -3,6 +3,8 @@ import { openDB, type DBSchema } from 'idb'
 import { toast } from 'sonner'
 import { emptyLibrary, MAX_PERSONAL, validateLibrary, type Library, type Progress, type WatchContext } from './library'
 import type { SourceKind } from './data'
+import { useLocale } from './i18n'
+import { MessageError } from './message-error'
 
 interface PersonalDB extends DBSchema { library: { key: string; value: Library } }
 let connection: ReturnType<typeof openDB<PersonalDB>> | undefined
@@ -17,6 +19,7 @@ const LibraryContext = createContext<{
   state: Library; ready: boolean; error: boolean; update: (edit: Edit) => Promise<boolean>
 } | null>(null)
 export function LibraryProvider({ children }: { children: ReactNode }) {
+  const { t } = useLocale()
   const [state, setState] = useState(emptyLibrary)
   const [ready, setReady] = useState(false)
   const [error, setError] = useState(false)
@@ -51,7 +54,7 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       channel.current?.postMessage('changed')
       return true
     } catch (e) {
-      toast.error(e instanceof Error && e.message.startsWith('备份') ? '已达到本地库数量上限。' : '无法保存本地数据。')
+      toast.error(t(e instanceof MessageError && e.messageKey === 'backupInvalid' ? 'libraryLimit' : 'saveDataFailed'))
       return false
     }
   }

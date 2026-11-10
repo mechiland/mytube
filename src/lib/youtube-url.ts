@@ -1,3 +1,4 @@
+import { MessageError } from './message-error'
 export const videoId = (v: unknown): v is string => typeof v === 'string' && /^[\w-]{11}$/.test(v)
 export const channelId = (v: unknown): v is string => typeof v === 'string' && /^UC[\w-]{22}$/.test(v)
 export const playlistId = (v: unknown): v is string => typeof v === 'string' && /^[\w-]{8,100}$/.test(v)
@@ -30,13 +31,13 @@ export function watchSearch(s: Record<string, unknown>) {
 
 export function parseYouTube(input: string): Target {
   const raw = input.trim()
-  if (!raw || raw.length > 2048 || /[\x00-\x20\\]/.test(raw)) throw new Error('请输入有效的 YouTube 链接。')
+  if (!raw || raw.length > 2048 || /[\x00-\x20\\]/.test(raw)) throw new MessageError('invalidYouTubeLink', '请输入有效的 YouTube 链接。')
   let url: URL
   try { url = new URL(/^[a-z][a-z\d+.-]*:/i.test(raw) ? raw : `https://${raw}`) }
-  catch { throw new Error('请输入有效的 YouTube 链接。') }
+  catch { throw new MessageError('invalidYouTubeLink', '请输入有效的 YouTube 链接。') }
   const hosts = ['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com', 'youtu.be', 'www.youtu.be']
   if (!hosts.includes(url.hostname) || !['http:', 'https:'].includes(url.protocol) || url.port || url.username || url.password)
-    throw new Error('只支持官方 YouTube 链接。')
+    throw new MessageError('officialYouTubeOnly', '只支持官方 YouTube 链接。')
 
   const parts = url.pathname.split('/').slice(1).map(decodeURIComponent)
   if (parts.at(-1) === '') parts.pop()
@@ -49,12 +50,12 @@ export function parseYouTube(input: string): Target {
     return { kind: 'channel', handle: first }
   if (!shortHost && (parts.length === 2 || (parts.length === 3 && ['videos', 'playlists', 'featured', 'about', 'shorts', 'streams'].includes(parts[2]))) && first === 'channel' && channelId(second))
     return { kind: 'channel', id: second }
-  if (!shortHost && (first === 'c' || first === 'user')) throw new Error('旧式自定义链接无法确定频道。请使用 @handle 或 /channel/UC… 链接。')
+  if (!shortHost && (first === 'c' || first === 'user')) throw new MessageError('legacyYouTubeLink', '旧式自定义链接无法确定频道。请使用 @handle 或 /channel/UC… 链接。')
 
   const v = shortHost && parts.length === 1 ? first
     : !shortHost && first === 'watch' && parts.length === 1 ? q.get('v')
     : !shortHost && parts.length === 2 && ['shorts', 'live'].includes(first) ? second : null
-  if (!videoId(v)) throw new Error('链接中没有可识别的频道、视频或公开播放列表。')
+  if (!videoId(v)) throw new MessageError('unrecognizedYouTubeLink', '链接中没有可识别的频道、视频或公开播放列表。')
   const search = watchSearch({ v, list, index: q.get('index'), t: q.get('t') ?? q.get('start') ?? new URLSearchParams(url.hash.slice(1)).get('t') })
   const time = timeSeconds(search.t)
   return { kind: 'video', id: v, ...(time === undefined ? {} : { time }), ...(search.list ? { list: search.list } : {}), ...(search.index ? { index: search.index } : {}) }

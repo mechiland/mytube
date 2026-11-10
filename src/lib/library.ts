@@ -1,3 +1,4 @@
+import { MessageError } from './message-error'
 import { channelId, playlistId, videoId, watchSearch } from './youtube-url'
 
 export const MAX_SOURCES = 40
@@ -25,7 +26,7 @@ const unique = (items: string[]) => Array.from(new Set(items))
 const numberIn = (n: unknown, max: number): n is number => typeof n === 'number' && Number.isFinite(n) && n >= 0 && n <= max
 
 export function validateLibrary(raw: unknown): Library {
-  const invalid = () => new Error('备份格式、版本或数据数量无效。')
+  const invalid = () => new MessageError('backupInvalid', '备份格式、版本或数据数量无效。')
   if (!isObject(raw) || raw.schemaVersion !== 1) throw invalid()
   const list = (key: string, check: (v: unknown) => boolean, max: number): string[] => {
     const value = raw[key]
@@ -57,7 +58,7 @@ export function validateLibrary(raw: unknown): Library {
   return { schemaVersion: 1, channels, playlists, favorites, hidden: list('hidden', videoId, MAX_PERSONAL), progress, contexts, theme: raw.theme, loop: raw.loop }
 }
 export function parseBackup(text: string) {
-  if (new TextEncoder().encode(text).length > MAX_BACKUP_BYTES) throw new Error('备份文件超过 500 KB。')
+  if (new TextEncoder().encode(text).length > MAX_BACKUP_BYTES) throw new MessageError('backupTooLarge', '备份文件超过 500 KB。')
   return validateLibrary(JSON.parse(text))
 }
 export function mergeLibrary(local: Library, incoming: Library) {

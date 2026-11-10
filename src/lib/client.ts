@@ -36,9 +36,9 @@ export const formatDuration = (seconds: number) => {
     ? [Math.floor(n / 3600), Math.floor(n / 60) % 60, n % 60].map((v, i) => i ? String(v).padStart(2, '0') : v).join(':')
     : `${Math.floor(n / 60)}:${String(n % 60).padStart(2, '0')}`
 }
-export const formatDate = (value: string | number) => {
+export const formatDate = (value: string | number, locale: string) => {
   const date = new Date(value)
-  return Number.isNaN(date.valueOf()) ? '' : date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })
+  return Number.isNaN(date.valueOf()) ? '' : date.toLocaleDateString(locale, { year: 'numeric', month: 'short', day: 'numeric' })
 }
 export function safeImage(url: string | undefined) {
   try {

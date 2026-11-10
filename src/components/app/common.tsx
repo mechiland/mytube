@@ -8,17 +8,20 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { api, formatDuration, safeImage, sourceQuery } from '@/lib/client'
-import { errors, type Source, type SourceKind, type SyncStatus } from '@/lib/data'
+import type { Source, SourceKind, SyncStatus } from '@/lib/data'
 import { saveSource, useLibrary } from '@/lib/personal'
+import { useLocale } from '@/lib/i18n'
 
 export function Notice({ error, title, retry }: { error?: Error | null; title?: string; retry?: () => void }) {
-  return <Alert className="notice"><TriangleAlert /><AlertTitle>{title ?? '暂时无法加载'}</AlertTitle>
-    <AlertDescription>{error?.message ?? '请检查链接后重试。'}</AlertDescription>
-    {retry && <Button variant="outline" size="sm" onClick={retry}>重试</Button>}
+  const { t, errorText } = useLocale()
+  return <Alert className="notice"><TriangleAlert /><AlertTitle>{title ?? t('loadFailed')}</AlertTitle>
+    <AlertDescription>{errorText(error)}</AlertDescription>
+    {retry && <Button variant="outline" size="sm" onClick={retry}>{t('retry')}</Button>}
   </Alert>
 }
-export function Loading({ label = '正在加载…' }: { label?: string }) {
-  return <div className="loading" role="status"><Skeleton className="h-2 w-24" /><span>{label}</span></div>
+export function Loading({ label }: { label?: string }) {
+  const { t } = useLocale()
+  return <div className="loading" role="status"><Skeleton className="h-2 w-24" /><span>{label ?? t('loading')}</span></div>
 }
 export function Cover({ url, duration, eager }: { url: string; duration?: number; eager?: boolean }) {
   const src = safeImage(url)
@@ -40,31 +43,37 @@ export function videoLink(id: string, context: { list?: string; index?: number; 
   return { to: '/watch', search: { v: id, ...context } }
 }
 export function ToggleSource({ source }: { source: Source }) {
+  const { t } = useLocale()
   const { state, update } = useLibrary()
   const query = useQueryClient()
   const saved = (source.kind === 'channel' ? state.channels : state.playlists).includes(source.id)
-  const text = source.kind === 'channel' ? (saved ? '已订阅 · 移除' : '订阅') : (saved ? '已保存 · 移除' : '保存播放列表')
+  const text = source.kind === 'channel' ? (saved ? t('unsubscribe') : t('subscribe')) : (saved ? t('unsavePlaylist') : t('savePlaylist'))
   return <Button variant={saved ? 'soft' : 'solid'} onClick={async () => {
     if (await update(s => saveSource(s, source.kind, source.id, !saved))) {
-      toast.success(saved ? '已从本地内容库移除' : '已添加到本地内容库')
+      toast.success(saved ? t('removedLocal') : t('addedLocal'))
       if (!saved) void query.fetchQuery(sourceQuery(source.kind, source.id)).then(() => query.invalidateQueries({ queryKey: ['feed'] })).catch(() => {})
     }
   }}>{text}</Button>
 }
 export function SyncLine({ status, kind, id, refetch }: { status?: SyncStatus; kind: SourceKind; id: string; refetch: () => void }) {
+  const { t, locale, apiError, errorText } = useLocale()
   const [busy, setBusy] = useState(false)
-  const detail = status?.error ? (status.complete ? '更新暂缓 · ' : '') + (errors[status.error] ?? errors.service) : status?.complete ? '已同步' : '正在分批同步'
+  let detail = t(status?.complete ? 'synced' : 'syncing')
+  if (status?.error) {
+    detail = apiError(status.error)
+    if (status.complete) detail = t('syncPaused', { detail })
+  }
   return <div className="sync-line">
-    <span>{detail} · {status?.count ?? 0} 条{status?.checked ? ` · 更新于 ${new Date(status.checked).toLocaleString('zh-CN')}` : ''}</span>
+    <span>{detail} · {t('syncCount', { count: status?.count ?? 0 })}{status?.checked && <> · {t('lastUpdated', { date: new Date(status.checked).toLocaleString(locale) })}</>}</span>
     <Button variant="ghost" size="sm" disabled={busy} onClick={async () => {
       setBusy(true)
       try {
         const result = await api<SyncStatus>('refresh', {}, undefined, { kind, id })
         refetch()
-        if (result.error) toast.error(errors[result.error] ?? errors.service)
-        else toast.success('已检查来源更新')
-      } catch (e) { toast.error((e as Error).message) }
+        if (result.error) toast.error(apiError(result.error))
+        else toast.success(t('checkedUpdates'))
+      } catch (e) { toast.error(errorText(e)) }
       finally { setBusy(false) }
-    }}><RefreshCw data-icon="inline-start" />{busy ? '检查中…' : '检查更新'}</Button>
+    }}><RefreshCw data-icon="inline-start" />{busy ? t('checking') : t('checkUpdates')}</Button>
   </div>
 }

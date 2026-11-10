@@ -3,6 +3,8 @@ import { expect, test, type Page } from '@playwright/test'
 import { emptyLibrary } from '../src/lib/library'
 import type { Channel, Item, Playlist, Video } from '../src/lib/data'
 
+test.use({ locale: 'zh-CN' })
+
 const channelId = 'UC' + 'a'.repeat(22)
 const otherId = 'UC' + 'b'.repeat(22)
 const listId = 'PLtestplaylist'
@@ -92,6 +94,7 @@ test('playlist gesture, duplicate position, progress restoration, and deferred a
   await expect(page.getByText('此视频不可用')).toBeVisible()
   await page.getByRole('button', { name: '播放全部' }).click()
   await expect(page.locator('iframe')).toHaveAttribute('src', /aaaaaaaaaaa\?.*autoplay=1/)
+  await expect(page.locator('iframe')).toHaveAttribute('src', /[?&]hl=zh-CN(?:&|$)/)
   await expect(page.locator('.queue-current')).toHaveText(/已选频道视频/)
   await expect.poll(() => page.evaluate(() => performance.getEntriesByName('mytube-playback-progress').length)).toBeGreaterThan(0)
   await page.evaluate(() => (window as Window & { fixtureEnd?: () => void }).fixtureEnd?.())
@@ -158,7 +161,7 @@ test('mobile dark plum portals, backup merge, hidden restore, and isolation', as
   await page.getByRole('button', { name: '恢复显示' }).filter({ visible: true }).last().click()
   await page.reload()
   await expect(page.locator('.ds-theme')).toHaveClass(/dark/)
-  const another = await browser.newContext()
+  const another = await browser.newContext({ locale: 'zh-CN' })
   const fresh = await another.newPage()
   await mockData(fresh)
   const home = page.url().replace('/settings', '/')
