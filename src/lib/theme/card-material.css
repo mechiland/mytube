@@ -1,0 +1,140 @@
+/* Selected MIT Radix Themes 3.3.0 card design data, source 1faff10ac26ae17f09944d418c6949b93fc6b566. See docs/ATTRIBUTION.md. */
+:where(.ds-theme) {
+  --ds-card-surface-box-shadow: 0 0 0 1px var(--gray-a5);
+  --ds-card-surface-hover-box-shadow: 0 0 0 1px var(--gray-a7);
+  --ds-card-surface-active-box-shadow: 0 0 0 1px var(--gray-a6);
+
+  @supports (color: color-mix(in oklab, white, black)) {
+    --ds-card-surface-box-shadow: 0 0 0 1px color-mix(in oklab, var(--gray-a5), var(--gray-5) 25%);
+    --ds-card-surface-hover-box-shadow: 0 0 0 1px color-mix(in oklab, var(--gray-a7), var(--gray-7) 25%);
+    --ds-card-surface-active-box-shadow: 0 0 0 1px color-mix(in oklab, var(--gray-a6), var(--gray-6) 25%);
+  }
+}
+
+/* * * * * * * * * * * * * * * * * * * */
+/*                                     */
+/*          Shadows / Classic          */
+/*                                     */
+/* * * * * * * * * * * * * * * * * * * */
+
+/*
+ * 1. Outer shadow has to be the same as inner shadow, but with a 1px smaller spread value.
+ * 2. Keep the initial state in sync with var(--shadow-2) in `shadow.css`.
+ * 3. Make sure that between all states, the length of the shadow list matches:
+ *    https://developer.mozilla.org/en-US/docs/Web/CSS/box-shadow#interpolation
+ */
+
+/* prettier-ignore */
+:where(.ds-theme) {
+  --ds-card-classic-box-shadow-inner:
+    0 0 0 1px var(--ds-card-classic-border-color),
+    0 0 0 1px var(--color-transparent),
+    0 0 0 0.5px var(--black-a1),
+    0 1px 1px 0 var(--gray-a2),
+    0 2px 1px -1px var(--black-a1),
+    0 1px 3px 0 var(--black-a1);
+  --ds-card-classic-box-shadow-outer:
+    0 0 0 0 var(--ds-card-classic-border-color),
+    0 0 0 0 var(--color-transparent),
+    0 0 0 0 var(--black-a1),
+    0 1px 1px -1px var(--gray-a2),
+    0 2px 1px -2px var(--black-a1),
+    0 1px 3px -1px var(--black-a1);
+
+  --ds-card-classic-hover-box-shadow-inner:
+    0 0 0 1px var(--ds-card-classic-hover-border-color),
+    0 1px 1px 1px var(--black-a1),
+    0 2px 1px -1px var(--gray-a3),
+    0 2px 3px -2px var(--black-a1),
+    0 3px 12px -4px var(--gray-a3),
+    0 4px 16px -8px var(--black-a1);
+  --ds-card-classic-hover-box-shadow-outer:
+    0 0 0 0 var(--ds-card-classic-hover-border-color),
+    0 1px 1px 0 var(--black-a1),
+    0 2px 1px -2px var(--gray-a3),
+    0 2px 3px -3px var(--black-a1),
+    0 3px 12px -5px var(--gray-a3),
+    0 4px 16px -9px var(--black-a1);
+
+  --ds-card-classic-active-box-shadow-inner:
+    0 0 0 1px var(--ds-card-classic-active-border-color),
+    0 0 0 1px var(--color-transparent),
+    0 0 0 0.5px var(--black-a1),
+    0 1px 1px 0 var(--gray-a4),
+    0 2px 1px -1px var(--black-a1),
+    0 1px 3px 0 var(--black-a1);
+  --ds-card-classic-active-box-shadow-outer:
+    0 0 0 0 var(--ds-card-classic-active-border-color),
+    0 0 0 0 var(--color-transparent),
+    0 0 0 0 var(--black-a1),
+    0 1px 1px -1px var(--gray-a4),
+    0 2px 1px -2px var(--black-a1),
+    0 1px 3px -1px var(--black-a1);
+
+  --ds-card-classic-border-color: var(--gray-a3);
+  --ds-card-classic-hover-border-color: var(--gray-a3);
+  --ds-card-classic-active-border-color: var(--gray-a4);
+  @supports (color: color-mix(in oklab, white, black)) {
+    --ds-card-classic-border-color: color-mix(in oklab, var(--gray-a3), var(--gray-3) 25%);
+    --ds-card-classic-hover-border-color: color-mix(in oklab, var(--gray-a4), var(--gray-4) 25%);
+    --ds-card-classic-active-border-color: color-mix(in oklab, var(--gray-a3), var(--gray-3) 25%);
+  }
+}
+
+/* prettier-ignore */
+:is(.dark, .dark-theme),
+:is(.dark, .dark-theme) :where(.ds-theme:not(.light, .light-theme)) {
+  --ds-card-classic-box-shadow-inner:
+    0 0 0 1px var(--ds-card-classic-border-color),
+    0 0 0 1px var(--color-transparent),
+    0 0 0 0.5px var(--black-a3),
+    0 1px 1px 0 var(--black-a6),
+    0 2px 1px -1px var(--black-a6),
+    0 1px 3px 0 var(--black-a5);
+  --ds-card-classic-box-shadow-outer:
+    0 0 0 0 var(--ds-card-classic-border-color),
+    0 0 0 0 var(--color-transparent),
+    0 0 0 0 var(--black-a3),
+    0 1px 1px -1px var(--black-a6),
+    0 2px 1px -2px var(--black-a6),
+    0 1px 3px -1px var(--black-a5);
+
+  --ds-card-classic-hover-box-shadow-inner:
+    0 0 0 1px var(--ds-card-classic-hover-border-color),
+    0 0 1px 1px var(--gray-a4),
+    0 0 1px -1px var(--gray-a4),
+    0 0 3px -2px var(--gray-a3),
+    0 0 12px -2px var(--gray-a3),
+    0 0 16px -8px var(--gray-a7);
+  --ds-card-classic-hover-box-shadow-outer:
+    0 0 0 0 var(--ds-card-classic-hover-border-color),
+    0 0 1px 0 var(--gray-a4),
+    0 0 1px -2px var(--gray-a4),
+    0 0 3px -3px var(--gray-a3),
+    0 0 12px -3px var(--gray-a3),
+    0 0 16px -9px var(--gray-a7);
+
+  --ds-card-classic-active-box-shadow-inner:
+    0 0 0 1px var(--ds-card-classic-active-border-color),
+    0 0 0 1px var(--color-transparent),
+    0 0 0 0.5px var(--black-a3),
+    0 1px 1px 0 var(--black-a6),
+    0 2px 1px -1px var(--black-a6),
+    0 1px 3px 0 var(--black-a5);
+  --ds-card-classic-active-box-shadow-outer:
+    0 0 0 0 var(--ds-card-classic-active-border-color),
+    0 0 0 0 var(--color-transparent),
+    0 0 0 0 var(--black-a3),
+    0 1px 1px -1px var(--black-a6),
+    0 2px 1px -2px var(--black-a6),
+    0 1px 3px -1px var(--black-a5);
+
+  --ds-card-classic-border-color: var(--gray-a6);
+  --ds-card-classic-hover-border-color: var(--gray-a6);
+  --ds-card-classic-active-border-color: var(--gray-a6);
+  @supports (color: color-mix(in oklab, white, black)) {
+    --ds-card-classic-border-color: color-mix(in oklab, var(--gray-a6), var(--gray-6) 25%);
+    --ds-card-classic-hover-border-color: color-mix(in oklab, var(--gray-a6), var(--gray-6) 25%);
+    --ds-card-classic-active-border-color: color-mix(in oklab, var(--gray-a6), var(--gray-6) 25%);
+  }
+}

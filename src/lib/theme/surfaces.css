@@ -1,0 +1,120 @@
+/* Radix Themes 3.3.0 surface design data (MIT), sRGB with official P3 fallbacks. */
+.ds-theme:not(.dark) { --palette-yellow-surface:#fefbe4cc; }
+.ds-theme.dark { --palette-yellow-surface:#231f1380; }
+[data-accent-color="yellow"], [data-color="yellow"] { --accent-surface:var(--palette-yellow-surface); }
+.ds-theme:not(.dark) { --palette-violet-surface:#f9f6ffcc; }
+.ds-theme.dark { --palette-violet-surface:#25193980; }
+[data-accent-color="violet"], [data-color="violet"] { --accent-surface:var(--palette-violet-surface); }
+.ds-theme:not(.dark) { --palette-tomato-surface:#fff6f5cc; }
+.ds-theme.dark { --palette-tomato-surface:#2d191580; }
+[data-accent-color="tomato"], [data-color="tomato"] { --accent-surface:var(--palette-tomato-surface); }
+.ds-theme:not(.dark) { --palette-teal-surface:#f0faf8cc; }
+.ds-theme.dark { --palette-teal-surface:#13272580; }
+[data-accent-color="teal"], [data-color="teal"] { --accent-surface:var(--palette-teal-surface); }
+.ds-theme:not(.dark) { --palette-slate-surface:#ffffffcc; }
+.ds-theme.dark { --palette-slate-surface:#1f212380; }
+[data-accent-color="slate"], [data-color="slate"] { --accent-surface:var(--palette-slate-surface); }
+.ds-theme:not(.dark) { --palette-sky-surface:#eef9fdcc; }
+.ds-theme.dark { --palette-sky-surface:#13233b80; }
+[data-accent-color="sky"], [data-color="sky"] { --accent-surface:var(--palette-sky-surface); }
+.ds-theme:not(.dark) { --palette-sand-surface:#ffffffcc; }
+.ds-theme.dark { --palette-sand-surface:#21212080; }
+[data-accent-color="sand"], [data-color="sand"] { --accent-surface:var(--palette-sand-surface); }
+.ds-theme:not(.dark) { --palette-sage-surface:#ffffffcc; }
+.ds-theme.dark { --palette-sage-surface:#1e201f80; }
+[data-accent-color="sage"], [data-color="sage"] { --accent-surface:var(--palette-sage-surface); }
+.ds-theme:not(.dark) { --palette-ruby-surface:#fff5f6cc; }
+.ds-theme.dark { --palette-ruby-surface:#2b191d80; }
+[data-accent-color="ruby"], [data-color="ruby"] { --accent-surface:var(--palette-ruby-surface); }
+.ds-theme:not(.dark) { --palette-red-surface:#fff5f5cc; }
+.ds-theme.dark { --palette-red-surface:#2f151780; }
+[data-accent-color="red"], [data-color="red"] { --accent-surface:var(--palette-red-surface); }
+.ds-theme:not(.dark) { --palette-purple-surface:#faf5fecc; }
+.ds-theme.dark { --palette-purple-surface:#2b173580; }
+[data-accent-color="purple"], [data-color="purple"] { --accent-surface:var(--palette-purple-surface); }
+.ds-theme:not(.dark) { --palette-plum-surface:#fdf5fdcc; }
+.ds-theme.dark { --palette-plum-surface:#2f152f80; }
+[data-accent-color="plum"], [data-color="plum"] { --accent-surface:var(--palette-plum-surface); }
+.ds-theme:not(.dark) { --palette-pink-surface:#fef5facc; }
+.ds-theme.dark { --palette-pink-surface:#31132980; }
+[data-accent-color="pink"], [data-color="pink"] { --accent-surface:var(--palette-pink-surface); }
+.ds-theme:not(.dark) { --palette-orange-surface:#fff5e9cc; }
+.ds-theme.dark { --palette-orange-surface:#271d1380; }
+[data-accent-color="orange"], [data-color="orange"] { --accent-surface:var(--palette-orange-surface); }
+.ds-theme:not(.dark) { --palette-olive-surface:#ffffffcc; }
+.ds-theme.dark { --palette-olive-surface:#1f201e80; }
+[data-accent-color="olive"], [data-color="olive"] { --accent-surface:var(--palette-olive-surface); }
+.ds-theme:not(.dark) { --palette-mint-surface:#effaf8cc; }
+.ds-theme.dark { --palette-mint-surface:#15272780; }
+[data-accent-color="mint"], [data-color="mint"] { --accent-surface:var(--palette-mint-surface); }
+.ds-theme:not(.dark) { --palette-mauve-surface:#ffffffcc; }
+.ds-theme.dark { --palette-mauve-surface:#22212380; }
+[data-accent-color="mauve"], [data-color="mauve"] { --accent-surface:var(--palette-mauve-surface); }
+.ds-theme:not(.dark) { --palette-lime-surface:#f6f9f0cc; }
+.ds-theme.dark { --palette-lime-surface:#1b211580; }
+[data-accent-color="lime"], [data-color="lime"] { --accent-surface:var(--palette-lime-surface); }
+.ds-theme:not(.dark) { --palette-jade-surface:#f1faf5cc; }
+.ds-theme.dark { --palette-jade-surface:#13271f80; }
+[data-accent-color="jade"], [data-color="jade"] { --accent-surface:var(--palette-jade-surface); }
+.ds-theme:not(.dark) { --palette-iris-surface:#f6f6ffcc; }
+.ds-theme.dark { --palette-iris-surface:#1d1b3980; }
+[data-accent-color="iris"], [data-color="iris"] { --accent-surface:var(--palette-iris-surface); }
+.ds-theme:not(.dark) { --palette-indigo-surface:#f5f8ffcc; }
+.ds-theme.dark { --palette-indigo-surface:#171d3b80; }
+[data-accent-color="indigo"], [data-color="indigo"] { --accent-surface:var(--palette-indigo-surface); }
+.ds-theme:not(.dark) { --palette-green-surface:#f1faf4cc; }
+.ds-theme.dark { --palette-green-surface:#15251d80; }
+[data-accent-color="green"], [data-color="green"] { --accent-surface:var(--palette-green-surface); }
+.ds-theme:not(.dark) { --palette-gray-surface:#ffffffcc; }
+.ds-theme.dark { --palette-gray-surface:#21212180; }
+[data-accent-color="gray"], [data-color="gray"] { --accent-surface:var(--palette-gray-surface); }
+.ds-theme:not(.dark) { --palette-grass-surface:#f3faf3cc; }
+.ds-theme.dark { --palette-grass-surface:#19231b80; }
+[data-accent-color="grass"], [data-color="grass"] { --accent-surface:var(--palette-grass-surface); }
+.ds-theme:not(.dark) { --palette-gold-surface:#f9f8efcc; }
+.ds-theme.dark { --palette-gold-surface:#25231d80; }
+[data-accent-color="gold"], [data-color="gold"] { --accent-surface:var(--palette-gold-surface); }
+.ds-theme:not(.dark) { --palette-cyan-surface:#eff9facc; }
+.ds-theme.dark { --palette-cyan-surface:#11252d80; }
+[data-accent-color="cyan"], [data-color="cyan"] { --accent-surface:var(--palette-cyan-surface); }
+.ds-theme:not(.dark) { --palette-crimson-surface:#fef5f8cc; }
+.ds-theme.dark { --palette-crimson-surface:#2f151f80; }
+[data-accent-color="crimson"], [data-color="crimson"] { --accent-surface:var(--palette-crimson-surface); }
+.ds-theme:not(.dark) { --palette-brown-surface:#fbf8f4cc; }
+.ds-theme.dark { --palette-brown-surface:#271f1b80; }
+[data-accent-color="brown"], [data-color="brown"] { --accent-surface:var(--palette-brown-surface); }
+.ds-theme:not(.dark) { --palette-bronze-surface:#fdf5f3cc; }
+.ds-theme.dark { --palette-bronze-surface:#27211d80; }
+[data-accent-color="bronze"], [data-color="bronze"] { --accent-surface:var(--palette-bronze-surface); }
+.ds-theme:not(.dark) { --palette-blue-surface:#f1f9ffcc; }
+.ds-theme.dark { --palette-blue-surface:#11213d80; }
+[data-accent-color="blue"], [data-color="blue"] { --accent-surface:var(--palette-blue-surface); }
+.ds-theme:not(.dark) { --palette-amber-surface:#fefae4cc; }
+.ds-theme.dark { --palette-amber-surface:#271f1380; }
+[data-accent-color="amber"], [data-color="amber"] { --accent-surface:var(--palette-amber-surface); }
+[data-color="gray"] {
+--accent-1:var(--gray-1);
+--accent-2:var(--gray-2);
+--accent-3:var(--gray-3);
+--accent-4:var(--gray-4);
+--accent-5:var(--gray-5);
+--accent-6:var(--gray-6);
+--accent-7:var(--gray-7);
+--accent-8:var(--gray-8);
+--accent-9:var(--gray-9);
+--accent-10:var(--gray-10);
+--accent-11:var(--gray-11);
+--accent-12:var(--gray-12);
+--accent-a1:var(--gray-a1);
+--accent-a2:var(--gray-a2);
+--accent-a3:var(--gray-a3);
+--accent-a4:var(--gray-a4);
+--accent-a5:var(--gray-a5);
+--accent-a6:var(--gray-a6);
+--accent-a7:var(--gray-a7);
+--accent-a8:var(--gray-a8);
+--accent-a9:var(--gray-a9);
+--accent-a10:var(--gray-a10);
+--accent-a11:var(--gray-a11);
+--accent-a12:var(--gray-a12);
+}

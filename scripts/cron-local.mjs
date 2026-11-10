@@ -1,0 +1,7 @@
+const origin = new URL(process.env.MYTUBE_TEST_ORIGIN ?? 'http://127.0.0.1:5173')
+if (!['127.0.0.1', 'localhost', '[::1]'].includes(origin.hostname)) throw new Error('Cron test only accepts a loopback origin.')
+const url = new URL('/cdn-cgi/local/scheduled', origin)
+url.searchParams.set('cron', '* * * * *')
+const response = await fetch(url)
+if (!response.ok) throw new Error(`Local scheduled handler returned ${response.status}`)
+console.log((await response.text()).trim())
