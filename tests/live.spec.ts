@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
+test.use({ locale: 'zh-CN' })
+
 const enabled = process.env.MYTUBE_LIVE === '1'
 test.skip(!enabled, 'Requires local production Worker and real YouTube Data API key')
 const channel = 'UCNymqCXr3sxL8dnmO_jScuA'
@@ -63,7 +65,7 @@ test('real add, channel tabs, playlist, comments and replies on workerd', async 
   await expect(page.getByRole('button', { name: '播放视频', exact: true })).toBeVisible()
   expect(unexpected).toEqual([])
 
-  const isolated = await browser.newContext()
+  const isolated = await browser.newContext({ locale: 'zh-CN' })
   const fresh = await isolated.newPage()
   await fresh.goto(page.url().split('/watch')[0])
   await expect(fresh.getByText('你的内容库还是空的')).toBeVisible()

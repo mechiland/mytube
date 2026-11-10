@@ -201,7 +201,7 @@
  }
 }
 .ds-theme [data-slot=switch-thumb] {
- position:absolute;left:1px;width:calc(var(--switch-height) - 2px);height:calc(var(--switch-height) - 2px);
+ position:absolute;inset-inline-start:1px;width:calc(var(--switch-height) - 2px);height:calc(var(--switch-height) - 2px);
  border-radius:calc(var(--switch-radius) - 1px);background:white;translate:var(--switch-thumb-offset,0px);
  box-shadow:0 0 1px 1px var(--black-a2),0 1px 1px var(--black-a1),0 2px 4px -1px var(--black-a1);
  transition:translate 140ms cubic-bezier(.45,.05,.55,.95),box-shadow 140ms ease-in-out;
@@ -210,6 +210,7 @@
   box-shadow:var(--switch-thumb-checked-shadow);
  }
 }
+:dir(rtl) .ds-theme [data-slot=switch-thumb][data-checked] {--switch-thumb-offset:calc(var(--switch-height) - var(--switch-width))}
 .ds-theme [data-slot=switch][data-variant=classic] [data-slot=switch-thumb]:where([data-unchecked]) {
  box-shadow:0 1px 3px var(--black-a3),0 2px 4px -1px var(--black-a1),0 0 0 1px var(--black-a2);
 }
@@ -770,11 +771,11 @@
 .ds-theme :is([data-slot=carousel-previous],[data-slot=carousel-next]):hover:not(:disabled) {background:var(--gray-a2);box-shadow:inset 0 0 0 1px var(--gray-a8)}
 .ds-theme :is([data-slot=carousel-previous],[data-slot=carousel-next]):disabled {background:transparent;box-shadow:inset 0 0 0 1px var(--gray-a6)}
 /* Dialog close: neutral ghost icon button, its 16px glyph centred on the title line and flush with the content edge. */
-.ds-theme :is([data-slot=dialog-content],[data-slot=alert-dialog-content])>[data-slot=dialog-close].ds-button.absolute {top:calc(var(--space-5) - 3px);right:calc(var(--space-5) - var(--space-1));color:var(--gray-a11)}
+.ds-theme :is([data-slot=dialog-content],[data-slot=alert-dialog-content])>[data-slot=dialog-close].ds-button.absolute {top:calc(var(--space-5) - 3px);inset-inline-end:calc(var(--space-5) - var(--space-1));color:var(--gray-a11)}
 .ds-theme :is([data-slot=dialog-content],[data-slot=alert-dialog-content])>[data-slot=dialog-close].ds-button.absolute:hover {background:var(--gray-a3);color:var(--gray-12)}
-.ds-theme :is([data-slot=dialog-content],[data-slot=alert-dialog-content])[data-scale="1"]>[data-slot=dialog-close].ds-button.absolute {top:calc(var(--space-3) - 3px);right:calc(var(--space-3) - var(--space-1))}
-.ds-theme :is([data-slot=dialog-content],[data-slot=alert-dialog-content])[data-scale="2"]>[data-slot=dialog-close].ds-button.absolute {top:calc(var(--space-4) - 3px);right:calc(var(--space-4) - var(--space-1))}
-.ds-theme :is([data-slot=dialog-content],[data-slot=alert-dialog-content])[data-scale="4"]>[data-slot=dialog-close].ds-button.absolute {top:calc(var(--space-6) - 3px);right:calc(var(--space-6) - var(--space-1))}
+.ds-theme :is([data-slot=dialog-content],[data-slot=alert-dialog-content])[data-scale="1"]>[data-slot=dialog-close].ds-button.absolute {top:calc(var(--space-3) - 3px);inset-inline-end:calc(var(--space-3) - var(--space-1))}
+.ds-theme :is([data-slot=dialog-content],[data-slot=alert-dialog-content])[data-scale="2"]>[data-slot=dialog-close].ds-button.absolute {top:calc(var(--space-4) - 3px);inset-inline-end:calc(var(--space-4) - var(--space-1))}
+.ds-theme :is([data-slot=dialog-content],[data-slot=alert-dialog-content])[data-scale="4"]>[data-slot=dialog-close].ds-button.absolute {top:calc(var(--space-6) - 3px);inset-inline-end:calc(var(--space-6) - var(--space-1))}
 
 /* Button base and variants live in the components layer: Radix defaults, while consumer className utilities
    (justify-start, w-12, rounded-full, h-*, text-*) override them exactly as in shadcn. */
@@ -976,13 +977,13 @@
 .ds-theme [data-slot=command-empty]:empty {display:none}
 .ds-theme :is([data-slot=dialog-content]):has(>[data-slot=command]) {padding:0;overflow:hidden}
 /* NativeSelect = Radix Select trigger: 12px inline padding, room for the 9px chevron, which sits 12px from the edge. */
-.ds-theme [data-slot=native-select] {padding-left:var(--space-3);padding-right:calc(var(--space-3) * 2 + 9px);cursor:default}
-.ds-theme [data-slot=native-select][data-size=sm] {--field-height:var(--space-5);font-size:var(--font-size-1);padding-left:var(--space-2);padding-right:calc(var(--space-2) * 2 + 9px)}
+.ds-theme [data-slot=native-select] {padding-inline-start:var(--space-3);padding-inline-end:calc(var(--space-3) * 2 + 9px);cursor:default}
+.ds-theme [data-slot=native-select][data-size=sm] {--field-height:var(--space-5);font-size:var(--font-size-1);padding-inline-start:var(--space-2);padding-inline-end:calc(var(--space-2) * 2 + 9px)}
 .ds-theme [data-slot=native-select]:focus-visible {outline:2px solid var(--accent-8);outline-offset:-1px}
 .ds-theme [data-slot=native-select]:disabled {background:var(--gray-a2);color:var(--gray-a8);box-shadow:inset 0 0 0 1px var(--gray-a6)}
 .ds-theme [data-slot=native-select][aria-invalid=true] {box-shadow:inset 0 0 0 1px var(--palette-red-8)}
-.ds-theme [data-slot=native-select-icon] {right:var(--space-3);width:9px;height:9px;color:var(--gray-12);opacity:.9}
-.ds-theme [data-slot=native-select-wrapper][data-size=sm] [data-slot=native-select-icon] {right:var(--space-2)}
+.ds-theme [data-slot=native-select-icon] {inset-inline-end:var(--space-3);width:9px;height:9px;color:var(--gray-12);opacity:.9}
+.ds-theme [data-slot=native-select-wrapper][data-size=sm] [data-slot=native-select-icon] {inset-inline-end:var(--space-2)}
 .ds-theme [data-slot=native-select-wrapper]:has(select:disabled) [data-slot=native-select-icon] {color:var(--gray-a8)}
 .ds-theme [data-slot=select-icon] {opacity:.9;color:inherit}
 /* Kbd inside Tooltip: translucent inverse chip on the gray-12 tooltip, same text size as the tooltip. */

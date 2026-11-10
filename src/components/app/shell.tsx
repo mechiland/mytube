@@ -1,4 +1,4 @@
-import { ClientOnly, Link, Outlet, useLocation, useNavigate } from '@tanstack/react-router'
+import { Link, Outlet, useLocation, useNavigate } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider, useQueries } from '@tanstack/react-query'
 import { Bookmark, Clock3, House, LibraryBig, ListVideo, Menu, Plus, Search, Settings2, TvMinimalPlay, X } from 'lucide-react'
 import { createContext, lazy, Suspense, useContext, useEffect, useState, type FormEvent } from 'react'
@@ -8,6 +8,8 @@ import { Toaster } from '@/components/ui/sonner'
 import { defaultTheme, Theme } from '@/lib/theme/theme'
 import { RequestError, sourceQuery } from '@/lib/client'
 import { LibraryProvider, useLibrary } from '@/lib/personal'
+import { useLocale } from '@/lib/i18n'
+import { MessageError } from '@/lib/message-error'
 
 import { ChannelAvatar, Notice } from './common'
 
@@ -18,19 +20,19 @@ const AddDialog = lazy(() => import('./add-dialog'))
 const AddContext = createContext(() => {})
 
 const sections = [
-  { to: '/', icon: House, label: '首页' },
-  { to: '/feed/subscriptions', icon: TvMinimalPlay, label: '订阅频道' },
-  { to: '/feed/playlists', icon: ListVideo, label: '播放列表' },
-  { to: '/feed/favorites', icon: Bookmark, label: '收藏' },
-  { to: '/feed/history', icon: Clock3, label: '继续观看' },
-  { to: '/settings', icon: Settings2, label: '设置' },
+  { to: '/', icon: House, label: 'home' },
+  { to: '/feed/subscriptions', icon: TvMinimalPlay, label: 'subscriptions' },
+  { to: '/feed/playlists', icon: ListVideo, label: 'playlists' },
+  { to: '/feed/favorites', icon: Bookmark, label: 'favorites' },
+  { to: '/feed/history', icon: Clock3, label: 'continueWatching' },
+  { to: '/settings', icon: Settings2, label: 'settings' },
 ] as const
 const makeClient = () => new QueryClient({
   defaultOptions: { queries: { staleTime: 30_000, retry: (n, e) => n < 1 && e instanceof RequestError && ['network', 'busy'].includes(e.code) } },
 })
 
 const plumTheme = { ...defaultTheme, accentColor: 'plum', grayColor: 'auto' } as const
-function ShellPlaceholder() {
+export function ShellPlaceholder() {
   return <Theme config={plumTheme}>
     <div className="app-shell">
       <header className="topbar" aria-busy="true">
@@ -42,11 +44,10 @@ function ShellPlaceholder() {
 }
 export function Providers() {
   const [client] = useState(makeClient)
-  return <ClientOnly fallback={<ShellPlaceholder />}>
-    <QueryClientProvider client={client}><LibraryProvider><Shell /></LibraryProvider></QueryClientProvider>
-  </ClientOnly>
+  return <QueryClientProvider client={client}><LibraryProvider><Shell /></LibraryProvider></QueryClientProvider>
 }
 function Shell() {
+  const { t, dir } = useLocale()
   const location = useLocation()
   const navigate = useNavigate()
   const { state, error } = useLibrary()
@@ -77,58 +78,60 @@ function Shell() {
     <div className="app-shell" data-rail={rail} data-watch={watch}>
       <header className="topbar">
         <div className="brand-group">
-          <Button variant="ghost" size="icon" aria-label="切换导航" onClick={() => {
+          <Button variant="ghost" size="icon" aria-label={t('toggleNavigation')} onClick={() => {
             if (window.matchMedia('(max-width: 760px)').matches) setMobile(v => !v)
             else setRail(v => !v)
           }}><Menu /></Button>
-          <Link to="/" className="brand" aria-label="mytube 首页"><BrandMark /><span>mytube</span></Link>
+          <Link to="/" className="brand" aria-label={t('brandHome')}><BrandMark /><span>mytube</span></Link>
         </div>
         <form onSubmit={search} className={searchOpen ? 'top-search search-open' : 'top-search'} role="search">
           <InputGroup className="search-box">
-            <InputGroupInput autoComplete="off" aria-label="搜索我的内容库" maxLength={120} placeholder="搜索我的内容库" value={q} onChange={e => setQ(e.target.value)} />
-            <InputGroupAddon align="inline-end"><InputGroupButton type="submit" aria-label="搜索"><Search /></InputGroupButton></InputGroupAddon>
+            <InputGroupInput autoComplete="off" aria-label={t('searchLibrary')} maxLength={120} placeholder={t('searchLibrary')} value={q} onChange={e => setQ(e.target.value)} />
+            <InputGroupAddon align="inline-end"><InputGroupButton type="submit" aria-label={t('search')}><Search /></InputGroupButton></InputGroupAddon>
           </InputGroup>
         </form>
         <div className="top-actions">
-          <Button variant="ghost" size="icon" className="mobile-search" aria-label="打开搜索" onClick={() => setSearchOpen(v => !v)}>{searchOpen ? <X /> : <Search />}</Button>
-          <Button variant="soft" className="add-button" onClick={() => setAdd(true)}><Plus data-icon="inline-start" /><span>添加内容</span></Button>
-          <Button variant="ghost" size="icon" className="header-settings" nativeButton={false} render={<Link to="/settings" aria-label="设置" />}><Settings2 /></Button>
+          <Button variant="ghost" size="icon" className="mobile-search" aria-label={t('openSearch')} onClick={() => setSearchOpen(v => !v)}>{searchOpen ? <X /> : <Search />}</Button>
+          <Button variant="soft" className="add-button" aria-label={t('addContent')} onClick={() => setAdd(true)}><Plus data-icon="inline-start" /><span>{t('addContent')}</span></Button>
+          <Button variant="ghost" size="icon" className="header-settings" nativeButton={false} render={<Link to="/settings" aria-label={t('settings')} />}><Settings2 /></Button>
         </div>
       </header>
-      {mobile && <button className="nav-scrim" onClick={() => setMobile(false)} aria-label="关闭导航" />}
+      {mobile && <button className="nav-scrim" onClick={() => setMobile(false)} aria-label={t('closeNavigation')} />}
       <aside className={mobile ? 'sidebar mobile-open' : 'sidebar'}>
-        <nav aria-label="内容库导航">
-          <div className="nav-kicker"><LibraryBig />我的内容库</div>
+        <nav aria-label={t('libraryNavigation')}>
+          <div className="nav-kicker"><LibraryBig />{t('myLibrary')}</div>
           {sections.map(({ to, icon: Icon, label }) => <Link key={to} to={to} activeOptions={{ exact: true, includeSearch: false }}
-            activeProps={{ className: 'nav-active' }} className="nav-item" title={label} onClick={() => setMobile(false)}><Icon /><span>{label}</span></Link>)}
+            activeProps={{ className: 'nav-active' }} className="nav-item" title={t(label)} onClick={() => setMobile(false)}><Icon /><span>{t(label)}</span></Link>)}
         </nav>
         {rail && !watch && <SavedChannelShortcuts close={() => setMobile(false)} />}
-        <div className="sidebar-note">个人内容库 <span>·</span> 仅此浏览器</div>
+        <div className="sidebar-note">{t('personalLibrary')} <span>·</span> {t('browserOnly')}</div>
       </aside>
       <main className="app-main" id="content">
-        {error && <Notice title="无法访问浏览器本地数据" error={new Error('请检查浏览器的站点存储权限。')} />}
+        {error && <Notice title={t('localDataUnavailable')} error={new MessageError('storagePermissions')} />}
         <AddContext.Provider value={() => setAdd(true)}><Outlet /></AddContext.Provider>
       </main>
     </div>
     {add && <Suspense fallback={null}><AddDialog open={add} setOpen={setAdd} /></Suspense>}
-    <Toaster theme={dark ? 'dark' : 'light'} position="bottom-right" />
+    <Toaster theme={dark ? 'dark' : 'light'} position={dir === 'rtl' ? 'bottom-left' : 'bottom-right'} dir={dir} containerAriaLabel={t('notifications')} />
   </Theme>
 }
 
 function SavedChannelShortcuts({ close }: { close: () => void }) {
+  const { t } = useLocale()
   const { state, ready } = useLibrary()
   const sources = useQueries({ queries: state.channels.slice(0, 6).map(id => ({ ...sourceQuery('channel', id), enabled: ready })) })
   const channels = sources.flatMap(result => result.data?.data.kind === 'channel' ? [result.data.data] : [])
   if (!channels.length) return null
-  return <nav className="channel-shortcuts" aria-label="已订阅的频道">
-    <div className="nav-kicker">已订阅</div>
+  return <nav className="channel-shortcuts" aria-label={t('subscribedChannels')}>
+    <div className="nav-kicker">{t('subscribed')}</div>
     {channels.map(channel => <Link key={channel.id} to="/channel/$id" params={{ id: channel.id }} onClick={close} className="nav-item">
       <ChannelAvatar className="shortcut-avatar" name={channel.title} url={channel.thumbnail} /><span>{channel.title}</span>
     </Link>)}
   </nav>
 }
 
-export function OpenAdd({ children = '添加内容' }: { children?: string }) {
+export function OpenAdd({ children }: { children?: string }) {
+  const { t } = useLocale()
   const open = useContext(AddContext)
-  return <Button onClick={open}><Plus data-icon="inline-start" />{children}</Button>
+  return <Button onClick={open}><Plus data-icon="inline-start" />{children ?? t('addContent')}</Button>
 }

@@ -6,7 +6,7 @@ const browser = await chromium.launch({ channel: 'chrome' })
 const runs = []
 try {
   for (let n = 0; n < 3; n++) {
-    const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: 'light' })
+    const context = await browser.newContext({ locale: 'zh-CN', viewport: { width: 1440, height: 900 }, colorScheme: 'light' })
     const page = await context.newPage()
     const scripts = new Map()
     page.on('response', res => {
