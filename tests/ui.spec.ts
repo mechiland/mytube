@@ -6,7 +6,8 @@ import type { Channel, Item, Playlist, Video } from '../src/lib/data'
 const channelId = 'UC' + 'a'.repeat(22)
 const otherId = 'UC' + 'b'.repeat(22)
 const listId = 'PLtestplaylist'
-const a: Video = { kind: 'video', id: 'aaaaaaaaaaa', title: '已选频道视频', thumbnail: '', description: '示例描述', published: '2025-01-01T12:00:00Z',
+const thumbnail = 'https://i.ytimg.com/vi/aaaaaaaaaaa/hqdefault.jpg'
+const a: Video = { kind: 'video', id: 'aaaaaaaaaaa', title: '已选频道视频', thumbnail, description: '示例描述', published: '2025-01-01T12:00:00Z',
   channelId, channelTitle: '频道 A', duration: 100, embeddable: true }
 const b: Video = { ...a, id: 'bbbbbbbbbbb', title: '跨频道列表成员', channelId: otherId, channelTitle: '频道 B' }
 const channel: Channel = { kind: 'channel', id: channelId, title: '频道 A', thumbnail: '', description: '频道简介', uploads: 'UU' + 'a'.repeat(22) }
@@ -19,6 +20,10 @@ const items: Item[] = [
 ]
 const comment = { id: 'comment-one', author: '公开作者', text: '<script>window.bad=true</script>\n第二行', likes: 12, published: a.published, replies: 24 }
 async function mockData(page: Page) {
+  await page.route(thumbnail, route => route.fulfill({
+    contentType: 'image/svg+xml',
+    body: '<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360"><rect width="480" height="360" fill="black"/><rect y="45" width="480" height="270" fill="white"/></svg>',
+  }))
   await page.route('**/api/**', route => {
     const url = new URL(route.request().url())
     const q = url.searchParams
@@ -63,6 +68,22 @@ async function mockData(page: Page) {
     }}; window.onYouTubeIframeAPIReady();`,
   }))
 }
+
+test('watch poster fills the player before playback', async ({ page }) => {
+  await mockData(page)
+  await page.goto(`/watch?v=${a.id}`)
+  const player = page.getByRole('region', { name: '视频播放器' })
+  const poster = player.locator('img')
+  await expect(poster).toHaveJSProperty('naturalWidth', 480)
+  expect(await poster.boundingBox()).toEqual(await player.boundingBox())
+  await expect(poster).toHaveCSS('object-fit', 'cover')
+
+  await page.getByRole('button', { name: '影院模式' }).click()
+  expect(await poster.boundingBox()).toEqual(await player.boundingBox())
+
+  await page.setViewportSize({ width: 390, height: 844 })
+  expect(await poster.boundingBox()).toEqual(await player.boundingBox())
+})
 
 test('playlist gesture, duplicate position, progress restoration, and deferred avatar-free comments', async ({ page }) => {
   await mockData(page)
