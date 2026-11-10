@@ -119,6 +119,7 @@
   "playlistVideos": "Видео из плейлиста",
   "noPlaylistItems": "Ни один элемент плейлиста еще не синхронизирован.",
   "playlist": "Плейлист",
+  "viewFullPlaylist": "Открыть весь плейлист",
   "invalidVideo": "Неверная ссылка на видео",
   "loadingVideo": "Загрузка видео…",
   "videoOpenFailed": "Не могу открыть видео",

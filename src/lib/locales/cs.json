@@ -119,6 +119,7 @@
   "playlistVideos": "Seznam videí",
   "noPlaylistItems": "Dosud nebyly synchronizovány žádné položky seznamu videí.",
   "playlist": "Seznam skladeb",
+  "viewFullPlaylist": "Zobrazit celý seznam videí",
   "invalidVideo": "Neplatný odkaz na video",
   "loadingVideo": "Načítání videa…",
   "videoOpenFailed": "Video nelze otevřít",

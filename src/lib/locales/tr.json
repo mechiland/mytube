@@ -119,6 +119,7 @@
   "playlistVideos": "Oynatma listesi videoları",
   "noPlaylistItems": "Henüz hiçbir oynatma listesi öğesi senkronize edilmedi.",
   "playlist": "Çalma listesi",
+  "viewFullPlaylist": "Oynatma listesinin tamamını görüntüle",
   "invalidVideo": "Geçersiz video bağlantısı",
   "loadingVideo": "Video yükleniyor…",
   "videoOpenFailed": "Video açılamıyor",

@@ -119,6 +119,7 @@
   "playlistVideos": "Lejátszási listás videók",
   "noPlaylistItems": "Még nincs szinkronizálva a lejátszási lista eleme.",
   "playlist": "Lejátszási lista elemre",
+  "viewFullPlaylist": "A teljes lejátszási lista megtekintése",
   "invalidVideo": "Érvénytelen videólink",
   "loadingVideo": "Videó betöltése…",
   "videoOpenFailed": "A videót nem lehet megnyitni",

@@ -14,6 +14,7 @@ const a: Video = { kind: 'video', id: 'aaaaaaaaaaa', title: '已选频道视频'
 const b: Video = { ...a, id: 'bbbbbbbbbbb', title: '跨频道列表成员', channelId: otherId, channelTitle: '频道 B' }
 const channel: Channel = { kind: 'channel', id: channelId, title: '频道 A', thumbnail: '', description: '频道简介', uploads: 'UU' + 'a'.repeat(22) }
 const list: Playlist = { kind: 'playlist', id: listId, title: '例子播放列表', thumbnail: '', description: '列表简介', count: 4, channelId, channelTitle: '频道 A' }
+const channelLists = [list, ...['第二个列表', '第三个列表', '第四个列表'].map((title, i) => ({ ...list, title, id: `${listId}${i}` }))]
 const items: Item[] = [
   { itemId: 'entry0', position: 0, videoId: a.id, video: a },
   { itemId: 'entry1', position: 1, videoId: null, video: null },
@@ -32,6 +33,7 @@ async function mockData(page: Page) {
     switch (url.pathname) {
       case '/api/resolve': return route.fulfill({ json: { target: { kind: 'channel', id: channelId }, value: channel } })
       case '/api/source': return route.fulfill({ json: { data: q.get('kind') === 'playlist' ? list : channel } })
+      case '/api/channel-lists': return route.fulfill({ json: { items: channelLists } })
       case '/api/feed': {
         const f = route.request().postDataJSON()
         const videos = f.playlists?.includes(listId) ? [a,b] : f.channels?.includes(channelId) || f.favorites?.includes(a.id) ? [a] : []
@@ -85,6 +87,22 @@ test('watch poster fills the player before playback', async ({ page }) => {
 
   await page.setViewportSize({ width: 390, height: 844 })
   expect(await poster.boundingBox()).toEqual(await player.boundingBox())
+})
+
+test('channel playlists fit four cards across on desktop and open the full playlist', async ({ page }) => {
+  await mockData(page)
+  await page.goto('/@example/playlists')
+  const cards = page.locator('.playlist-card')
+  await expect(cards).toHaveCount(4)
+  const tops = () => cards.evaluateAll(elements => elements.map(element => element.getBoundingClientRect().top))
+  await expect.poll(async () => new Set(await tops()).size).toBe(1)
+
+  await page.setViewportSize({ width: 390, height: 844 })
+  await expect.poll(async () => new Set(await tops()).size).toBe(2)
+  const first = cards.first()
+  await expect(first.getByText('4 部视频', { exact: true })).toBeVisible()
+  await first.getByText('查看完整播放列表', { exact: true }).click()
+  await expect(page).toHaveURL(`/playlist?list=${listId}`)
 })
 
 test('playlist gesture, duplicate position, progress restoration, and deferred avatar-free comments', async ({ page }) => {

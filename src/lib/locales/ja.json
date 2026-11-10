@@ -119,6 +119,7 @@
   "playlistVideos": "プレイリストビデオ",
   "noPlaylistItems": "まだ同期されているプレイリスト項目はありません。",
   "playlist": "プレイリスト",
+  "viewFullPlaylist": "再生リスト全体を表示",
   "invalidVideo": "無効なビデオリンク",
   "loadingVideo": "ビデオを読み込み中…",
   "videoOpenFailed": "ビデオを開けません",

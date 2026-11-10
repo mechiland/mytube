@@ -119,6 +119,7 @@
   "playlistVideos": "재생목록 동영상",
   "noPlaylistItems": "아직 동기화된 재생목록 항목이 없습니다.",
   "playlist": "재생목록",
+  "viewFullPlaylist": "전체 재생목록 보기",
   "invalidVideo": "잘못된 동영상 링크",
   "loadingVideo": "동영상 로드 중…",
   "videoOpenFailed": "비디오를 열 수 없습니다",

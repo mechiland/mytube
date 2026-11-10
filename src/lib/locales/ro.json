@@ -119,6 +119,7 @@
   "playlistVideos": "Videoclipuri din lista de redare",
   "noPlaylistItems": "Niciun element din lista de redare nu a fost sincronizat încă.",
   "playlist": "Lista de redare",
+  "viewFullPlaylist": "Vezi întreaga listă de redare",
   "invalidVideo": "Link video nevalid",
   "loadingVideo": "Se încarcă videoclipul...",
   "videoOpenFailed": "Videoclipul nu poate fi deschis",

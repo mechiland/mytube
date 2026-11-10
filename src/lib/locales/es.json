@@ -119,6 +119,7 @@
   "playlistVideos": "Vídeos de lista de reproducción",
   "noPlaylistItems": "Aún no se han sincronizado elementos de la lista de reproducción.",
   "playlist": "Lista de reproducción",
+  "viewFullPlaylist": "Ver lista de reproducción completa",
   "invalidVideo": "Enlace de vídeo no válido",
   "loadingVideo": "Cargando vídeo…",
   "videoOpenFailed": "No se puede abrir el vídeo",

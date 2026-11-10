@@ -119,6 +119,7 @@
   "playlistVideos": "Videozapisi popisa za reprodukciju",
   "noPlaylistItems": "Nijedna stavka popisa za reprodukciju još nije sinkronizirana.",
   "playlist": "Popis pjesama",
+  "viewFullPlaylist": "Prikaži cijeli popis za reprodukciju",
   "invalidVideo": "Nevažeća video poveznica",
   "loadingVideo": "Učitavanje videa...",
   "videoOpenFailed": "Nije moguće otvoriti video",

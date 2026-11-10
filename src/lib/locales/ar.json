@@ -119,6 +119,7 @@
   "playlistVideos": "فيديوهات قائمة التشغيل",
   "noPlaylistItems": "لم تتم مزامنة أي عناصر في قائمة التشغيل حتى الآن.",
   "playlist": "قائمة التشغيل",
+  "viewFullPlaylist": "عرض قائمة التشغيل الكاملة",
   "invalidVideo": "رابط الفيديو غير صالح",
   "loadingVideo": "جارٍ تحميل الفيديو…",
   "videoOpenFailed": "لا يمكن فتح الفيديو",

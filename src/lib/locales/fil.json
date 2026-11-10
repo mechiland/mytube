@@ -119,6 +119,7 @@
   "playlistVideos": "Mga video sa playlist",
   "noPlaylistItems": "Wala pang naka-sync na mga item sa playlist.",
   "playlist": "Playlist",
+  "viewFullPlaylist": "Tingnan ang buong playlist",
   "invalidVideo": "Di-wastong link ng video",
   "loadingVideo": "Nilo-load ang video…",
   "videoOpenFailed": "Hindi mabuksan ang video",

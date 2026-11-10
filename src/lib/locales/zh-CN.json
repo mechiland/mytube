@@ -119,6 +119,7 @@
   "playlistVideos": "列表视频",
   "noPlaylistItems": "此列表暂无已同步的条目。",
   "playlist": "播放列表",
+  "viewFullPlaylist": "查看完整播放列表",
   "invalidVideo": "无效的视频链接",
   "loadingVideo": "正在读取视频…",
   "videoOpenFailed": "无法打开视频",

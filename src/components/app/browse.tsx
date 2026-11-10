@@ -231,7 +231,7 @@ export function ChannelPage({ id, profile, tab = 'featured', filters, change }: 
         {lists.isLoading && <Loading />}
         {lists.error && <Notice error={lists.error} retry={() => void lists.refetch()} />}
         {lists.data?.pages[0].items.length === 0 && <Blank title={t('noPublicPlaylists')} description={t('browseChannelVideos')} kind="playlist" />}
-        <div className="video-grid">{lists.data?.pages.flatMap(p => p.items).map(p => <PlaylistCard key={p.id} list={p} />)}</div>
+        <div className="playlist-grid">{lists.data?.pages.flatMap(p => p.items).map(p => <PlaylistCard key={p.id} list={p} />)}</div>
         <LoadMore more={lists.hasNextPage} loading={lists.isFetchingNextPage} next={() => void lists.fetchNextPage()} />
       </> : <>
         <SyncLine kind="channel" id={data.id} status={videos.data?.pages[0].statuses[0] ?? query.data?.status} refetch={() => {
@@ -245,8 +245,12 @@ export function ChannelPage({ id, profile, tab = 'featured', filters, change }: 
 function PlaylistCard({ list }: { list: Playlist }) {
   const { t } = useLocale()
   return <article className="playlist-card">
-    <Link to="/playlist" search={{ list: list.id }}><div className="playlist-cover"><Cover url={list.thumbnail} /><span><ListVideo />{t('videoCount', { count: list.count })}</span></div><h2>{list.title}</h2></Link>
-    <ChannelLink id={list.channelId} className="muted">{list.channelTitle}</ChannelLink>
+    <Link to="/playlist" search={{ list: list.id }} className="playlist-card-link">
+      <div className="playlist-cover"><Cover url={list.thumbnail} /><span><ListVideo aria-hidden="true" />{t('videoCount', { count: list.count })}</span></div>
+      <h2>{list.title}</h2>
+      <p className="muted">{t('playlist')}</p>
+      <span className="playlist-card-view muted">{t('viewFullPlaylist')}</span>
+    </Link>
   </article>
 }
 export function PlaylistItems({ items, list, active }: { items: Item[]; list: string; active?: number }) {
