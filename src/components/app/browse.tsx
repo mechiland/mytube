@@ -1,6 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useInfiniteQuery, useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Bookmark, Clock3, LayoutGrid, LibraryBig, ListVideo, Play, SearchX, TvMinimalPlay } from 'lucide-react'
+import { Bookmark, Clock3, LibraryBig, ListVideo, Play, SearchX, TvMinimalPlay } from 'lucide-react'
 import { lazy, Suspense, useEffect } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -103,22 +103,15 @@ export function LibraryFeed({ filters, q, mode = 'home', change }: {
   const { t } = useLocale()
   const sources = useSavedSources()
   const query = useFeed({ ...filters, q, favorites: mode === 'favorites' })
-  const first = query.data?.pages[0]
-  const pending = first?.statuses.filter(s => !s.complete) ?? []
-  const paused = first?.statuses.filter(s => !!s.error) ?? []
   const hasSources = mode === 'favorites' ? !!state.favorites.length : !!(state.channels.length + state.playlists.length + state.favorites.length)
+  const title = mode === 'results' ? (q ? t('searchResults', { query: q }) : t('searchLibrary'))
+    : mode === 'favorites' ? t('favorites') : undefined
   return <section className="page library-page">
-    <header className="page-heading">
-      <p className="eyebrow"><LayoutGrid /> {mode === 'results' ? t('librarySearch') : t('myLibrary')}</p>
-      <h1>{mode === 'results' ? (q ? t('searchResults', { query: q }) : t('searchLibrary')) : mode === 'favorites' ? t('favorites') : t('home')}</h1>
-      <p className="muted">{mode === 'results' ? t('searchHelp') : mode === 'favorites' ? t('favoritesHelp') : t('homeHelp')}</p>
-    </header>
+    {title && <header className="page-heading"><h1>{title}</h1></header>}
     {!ready ? <Loading label={t('loadingLibrary')} /> : !hasSources
       ? <Blank kind={mode === 'favorites' ? 'favorites' : 'library'} title={mode === 'favorites' ? t('noFavorites') : t('libraryEmpty')} description={t('getStarted')} action />
       : <>
         <FeedControls filters={filters} change={change} sources={mode === 'favorites' ? undefined : sources} />
-        {paused.length > 0 && <p className="library-sync muted" role="status">{t('sourcesPaused', { count: paused.length })}</p>}
-        {pending.length > 0 && <p className="library-sync muted" role="status">{t('sourcesPending', { count: pending.length })}</p>}
         {sources.some(s => s.query.isError) && <Notice title={t('sourcesFailed')} error={sources.find(s => s.query.error)?.query.error}
           retry={() => sources.filter(s => s.query.isError).forEach(s => { void s.query.refetch() })} />}
         {mode === 'favorites' && <FavoriteFallback videos={query.data?.pages.flatMap(p => p.items) ?? []} />}
@@ -147,8 +140,7 @@ export function SavedSources({ kind }: { kind: SourceKind }) {
   const sources = useSavedSources().filter(s => s.kind === kind)
   const title = kind === 'channel' ? t('subscriptions') : t('playlists')
   return <section className="page">
-    <header className="page-heading"><p className="eyebrow">{t('myLibrary')}</p><h1>{title}</h1>
-      <p className="muted">{kind === 'channel' ? t('subscriptionsHelp') : t('playlistsHelp')}</p></header>
+    <header className="page-heading"><h1>{title}</h1></header>
     {!ready ? <Loading /> : !sources.length ? <Blank kind={kind} title={t(kind === 'channel' ? 'noSubscriptions' : 'noPlaylists')} description={t('saveSourceHelp')} action /> : <div className="source-list">
       {sources.map(({ query, id }) => {
         const data = query.data?.data
@@ -181,7 +173,7 @@ export function History() {
     getNextPageParam: (_, pages) => pages.length * 8 < ids.length ? pages.length * 8 : undefined,
   })
   return <section className="page">
-    <header className="page-heading"><p className="eyebrow">{t('myLibrary')}</p><h1>{t('continueWatching')}</h1><p className="muted">{t('continueHelp')}</p></header>
+    <header className="page-heading"><h1>{t('continueWatching')}</h1></header>
     {(!ready || query.isLoading) ? <Loading /> : !ids.length ? <Blank kind="history" title={t('noHistory')} description={t('historyHelp')} />
       : <div className="video-grid"><Suspense fallback={<Loading />}>{query.data?.pages.flat().map((r, i) => r.status === 'fulfilled'
         ? <VideoCard key={r.value.id} video={r.value} preserveContext />
@@ -217,7 +209,7 @@ export function ChannelPage({ id, profile, tab = 'featured', filters, change }: 
         <h1>{data.title}</h1>
         {data.handle && <p>{data.handle}</p>}
         {data.description && <p className="muted summary-line">{data.description}</p>}
-        <div className="channel-actions"><ToggleSource source={data} /><span className="muted">{t('localSubscription')}</span></div>
+        <ToggleSource source={data} />
       </div>
     </header>
     <TabNav aria-label={t('channelTabs')} className="channel-tabs">{channelTabs.map(([key, label]) =>
@@ -282,7 +274,6 @@ export function PlaylistPage({ id }: { id?: string }) {
   return <section className="page playlist-page">
     <aside className="playlist-intro">
       <Cover url={list.thumbnail} eager />
-      <p className="eyebrow"><ListVideo /> {t('publicPlaylist')}</p>
       <h1>{list.title}</h1><ChannelLink id={list.channelId}>{list.channelTitle}</ChannelLink>
       <p className="muted">{t('videoCount', { count: list.count })}</p>
       <div className="playlist-actions">

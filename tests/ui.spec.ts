@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { expect, test, type Page } from '@playwright/test'
 import { emptyLibrary } from '../src/lib/library'
-import type { Channel, Item, Playlist, Video } from '../src/lib/data'
+import type { Channel, Item, Playlist, SyncStatus, Video } from '../src/lib/data'
 
 test.use({ locale: 'zh-CN' })
 
@@ -22,7 +22,7 @@ const items: Item[] = [
   { itemId: 'entry3', position: 3, videoId: a.id, video: a },
 ]
 const comment = { id: 'comment-one', author: '公开作者', text: '<script>window.bad=true</script>\n第二行', likes: 12, published: a.published, replies: 24 }
-async function mockData(page: Page) {
+async function mockData(page: Page, statuses: SyncStatus[] = []) {
   await page.route(thumbnail, route => route.fulfill({
     contentType: 'image/svg+xml',
     body: '<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360"><rect width="480" height="360" fill="black"/><rect y="45" width="480" height="270" fill="white"/></svg>',
@@ -37,7 +37,7 @@ async function mockData(page: Page) {
       case '/api/feed': {
         const f = route.request().postDataJSON()
         const videos = f.playlists?.includes(listId) ? [a,b] : f.channels?.includes(channelId) || f.favorites?.includes(a.id) ? [a] : []
-        return route.fulfill({ json: { items: videos.filter(v => !f.hidden?.includes(v.id) && (!f.q || v.title.includes(f.q))), statuses: [] } })
+        return route.fulfill({ json: { items: videos.filter(v => !f.hidden?.includes(v.id) && (!f.q || v.title.includes(f.q))), statuses } })
       }
       case '/api/playlist': return route.fulfill({ json: { items } })
       case '/api/video': return route.fulfill({ json: q.get('id') === b.id ? b : a })
@@ -73,6 +73,34 @@ async function mockData(page: Page) {
   }))
 }
 
+test('settings is available through the sidebar without duplicate navigation or labels', async ({ page }) => {
+  await page.goto('/')
+  const navigation = page.getByRole('navigation', { name: '内容库导航' })
+  const settings = navigation.getByRole('link', { name: '设置', exact: true })
+  await expect(settings).toBeVisible()
+  await expect(page.getByRole('banner').getByLabel('设置', { exact: true })).toHaveCount(0)
+  await expect(page.getByRole('complementary').getByText(/^(我的内容库|个人内容库 · 仅此浏览器)$/)).toHaveCount(0)
+  await settings.click()
+  await expect(page).toHaveURL('/settings')
+})
+
+test('library pages show a compact title without introductory copy', async ({ page }) => {
+  for (const [path, title] of [
+    ['/feed/subscriptions', '订阅频道'], ['/feed/playlists', '播放列表'],
+    ['/feed/favorites', '收藏'], ['/feed/history', '继续观看'], ['/results', '搜索我的内容库'], ['/settings', '设置'],
+  ]) {
+    await test.step(path, async () => {
+      await page.goto(path)
+      const heading = page.getByRole('heading', { level: 1, name: title, exact: true })
+      await expect(heading).toBeVisible()
+      await expect(page.getByRole('main').locator('header')).toHaveText(title)
+      await expect(heading).toHaveCSS('font-size', '32px')
+    })
+  }
+  await page.setViewportSize({ width: 390, height: 844 })
+  await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '22px')
+})
+
 test('watch poster fills the player before playback', async ({ page }) => {
   await mockData(page)
   await page.goto(`/watch?v=${a.id}`)
@@ -92,6 +120,8 @@ test('watch poster fills the player before playback', async ({ page }) => {
 test('channel playlists fit four cards across on desktop and open the full playlist', async ({ page }) => {
   await mockData(page)
   await page.goto('/@example/playlists')
+  await expect(page.getByRole('heading', { name: channel.title, exact: true })).toHaveCSS('font-size', '32px')
+  await expect(page.getByText('仅订阅到此浏览器', { exact: true })).toHaveCount(0)
   const cards = page.locator('.playlist-card')
   await expect(cards).toHaveCount(4)
   const tops = () => cards.evaluateAll(elements => elements.map(element => element.getBoundingClientRect().top))
@@ -108,6 +138,8 @@ test('channel playlists fit four cards across on desktop and open the full playl
 test('playlist gesture, duplicate position, progress restoration, and deferred avatar-free comments', async ({ page }) => {
   await mockData(page)
   await page.goto(`/playlist?list=${listId}`)
+  await expect(page.getByRole('heading', { name: list.title, exact: true })).toHaveCSS('font-size', '26px')
+  await expect(page.getByText('公开播放列表', { exact: true })).toHaveCount(0)
   await expect(page.locator('.playlist-items li')).toHaveCount(4)
   await expect(page.getByText('此视频不可用')).toBeVisible()
   await page.getByRole('button', { name: '播放全部' }).click()
@@ -140,7 +172,7 @@ test('playlist gesture, duplicate position, progress restoration, and deferred a
 
 test('mobile dark plum portals, backup merge, hidden restore, and isolation', async ({ page, browser }) => {
   await page.setViewportSize({ width: 390, height: 844 })
-  await mockData(page)
+  await mockData(page, [{ kind: 'channel', id: channelId, count: 1, complete: false, checked: 0, due: 0 }])
   await page.goto('/settings')
   await page.getByLabel('主题').selectOption('dark')
   await expect(page.locator('.ds-theme')).toHaveAttribute('data-accent-color', 'plum')
@@ -169,6 +201,9 @@ test('mobile dark plum portals, backup merge, hidden restore, and isolation', as
   expect(JSON.parse(exported.toString())).toMatchObject({ schemaVersion: 1, channels: [channelId], favorites: [a.id] })
   await page.getByRole('link', { name: 'mytube 首页' }).click()
   await expect(page.locator('.video-title')).toHaveCount(1)
+  await expect(page.getByRole('main').getByRole('heading', { level: 1 })).toHaveCount(0)
+  await expect(page.getByRole('combobox', { name: '排序' })).toBeVisible()
+  await expect(page.getByText('1 个来源尚未同步完毕。当前仅显示已同步内容。')).toHaveCount(0)
   await page.getByRole('button', { name: '已选频道视频的操作' }).click()
   await expect(page.locator('.ds-theme.dark [data-theme-portal]').getByRole('menu')).toBeVisible()
   await page.getByRole('menuitem', { name: '隐藏视频' }).click()
