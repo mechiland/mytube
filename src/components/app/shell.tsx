@@ -3,6 +3,7 @@ import { hydrate, IsRestoringProvider, QueryClient, QueryClientProvider, useQuer
 import { Bookmark, Clock3, House, ListVideo, Menu, Plus, Search, Settings2, TvMinimalPlay } from 'lucide-react'
 import { createContext, lazy, Suspense, useContext, useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { Toaster } from '@/components/ui/sonner'
 import { defaultTheme, Theme } from '@/lib/theme/theme'
 import { RequestError, sourceQuery } from '@/lib/client'
@@ -20,6 +21,7 @@ function BrandMark() {
 const AddDialog = lazy(() => import('./add-dialog'))
 const SearchDialog = lazy(() => import('./search-dialog'))
 const AddContext = createContext(() => {})
+const TheaterContext = createContext<(active: boolean) => void>(() => {})
 
 const sections = [
   { to: '/', icon: House, label: 'home' },
@@ -61,14 +63,19 @@ function Shell() {
   const { state, error } = useLibrary()
   const [systemDark, setSystemDark] = useState(false)
   const [rail, setRail] = useState(true)
-  const [mobile, setMobile] = useState(false)
+  const [navigationOpen, setNavigationOpen] = useState(false)
+  const [theater, setTheater] = useState(false)
   const [add, setAdd] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [shortcut, setShortcut] = useState('Ctrl K')
   const searchTrigger = useRef<HTMLButtonElement>(null)
   const mobileSearchTrigger = useRef<HTMLButtonElement>(null)
+  const navigationTrigger = useRef<HTMLButtonElement>(null)
   const queryText = typeof (location.search as Record<string, unknown>).search_query === 'string'
     ? String((location.search as Record<string, unknown>).search_query) : ''
+  useEffect(() => {
+    setNavigationOpen(false)
+  }, [location.href])
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.defaultPrevented || event.isComposing || event.repeat || event.altKey || !(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== 'k') return
@@ -90,11 +97,12 @@ function Shell() {
   const dark = state.theme === 'dark' || (state.theme === 'system' && systemDark)
   const watch = location.pathname === '/watch'
   return <Theme config={{ ...plumTheme, appearance: dark ? 'dark' : 'light' }}>
-    <div className="app-shell" data-rail={rail} data-watch={watch}>
-      <header className="topbar">
+    <div className="app-shell" data-rail={rail} data-watch={watch} data-theater={watch && theater}>
+      <Theme className="topbar-theme" config={{ ...plumTheme, appearance: (watch && theater) || dark ? 'dark' : 'light' }}><header className="topbar">
         <div className="brand-group">
-          <Button variant="ghost" size="icon" aria-label={t('toggleNavigation')} onClick={() => {
-            if (window.matchMedia('(max-width: 760px)').matches) setMobile(v => !v)
+          <Button ref={navigationTrigger} variant="ghost" size="icon" aria-label={t('toggleNavigation')}
+            aria-expanded={watch ? navigationOpen : undefined} onClick={() => {
+            if (watch || window.matchMedia('(max-width: 760px)').matches) setNavigationOpen(v => !v)
             else setRail(v => !v)
           }}><Menu /></Button>
           <Link to="/" className="brand" aria-label={t('brandHome')}><BrandMark /><span>mytube</span></Link>
@@ -107,25 +115,52 @@ function Shell() {
           <Button ref={mobileSearchTrigger} variant="ghost" size="icon" className="mobile-search" aria-label={t('openSearch')} aria-haspopup="dialog" aria-expanded={searchOpen} onClick={() => setSearchOpen(true)}><Search /></Button>
           <Button variant="soft" className="add-button" aria-label={t('addContent')} onClick={() => setAdd(true)}><Plus data-icon="inline-start" /><span>{t('addContent')}</span></Button>
         </div>
-      </header>
-      {mobile && <button className="nav-scrim" onClick={() => setMobile(false)} aria-label={t('closeNavigation')} />}
-      <aside className={mobile ? 'sidebar mobile-open' : 'sidebar'}>
-        <nav aria-label={t('libraryNavigation')}>
-          {sections.map(({ to, icon: Icon, label }) => <Link key={to} to={to} activeOptions={{ exact: true, includeSearch: false }}
-            activeProps={{ className: 'nav-active' }} className="nav-item" title={t(label)} onClick={() => setMobile(false)}><Icon /><span>{t(label)}</span></Link>)}
-        </nav>
-        {rail && !watch && <SavedChannelShortcuts close={() => setMobile(false)} />}
-      </aside>
+      </header></Theme>
+      {!watch && <aside className="sidebar">
+        <LibraryNavigation close={() => setNavigationOpen(false)} />
+        {rail && <SavedChannelShortcuts close={() => setNavigationOpen(false)} />}
+      </aside>}
       <main className="app-main" id="content">
         {error && <Notice title={t('localDataUnavailable')} error={new MessageError('storagePermissions')} />}
-        <AddContext.Provider value={() => setAdd(true)}><Outlet /></AddContext.Provider>
+        <TheaterContext.Provider value={setTheater}>
+          <AddContext.Provider value={() => setAdd(true)}><Outlet /></AddContext.Provider>
+        </TheaterContext.Provider>
       </main>
     </div>
+    <Dialog open={navigationOpen} onOpenChange={setNavigationOpen}>
+      <DialogContent className="navigation-drawer" showCloseButton={false} finalFocus={navigationTrigger}>
+        <DialogTitle className="sr-only">{t('libraryNavigation')}</DialogTitle>
+        <div className="navigation-drawer-header brand-group">
+          <DialogClose render={<Button variant="ghost" size="icon" aria-label={t('closeNavigation')} />}><Menu /></DialogClose>
+          <Link to="/" className="brand" aria-label={t('brandHome')} onClick={() => setNavigationOpen(false)}><BrandMark /><span>mytube</span></Link>
+        </div>
+        <div className="navigation-drawer-links">
+          <LibraryNavigation close={() => setNavigationOpen(false)} />
+          <SavedChannelShortcuts close={() => setNavigationOpen(false)} />
+        </div>
+      </DialogContent>
+    </Dialog>
     {add && <Suspense fallback={null}><AddDialog open={add} setOpen={setAdd} /></Suspense>}
     {searchOpen && <Suspense fallback={null}><SearchDialog initialQuery={queryText} close={() => setSearchOpen(false)}
       returnFocus={() => window.matchMedia('(max-width: 760px)').matches ? mobileSearchTrigger.current : searchTrigger.current} /></Suspense>}
     <Toaster theme={dark ? 'dark' : 'light'} position={dir === 'rtl' ? 'bottom-left' : 'bottom-right'} dir={dir} containerAriaLabel={t('notifications')} />
   </Theme>
+}
+
+export function useTheaterHeader(active: boolean) {
+  const setTheater = useContext(TheaterContext)
+  useEffect(() => {
+    setTheater(active)
+    return () => setTheater(false)
+  }, [active, setTheater])
+}
+
+function LibraryNavigation({ close }: { close: () => void }) {
+  const { t } = useLocale()
+  return <nav aria-label={t('libraryNavigation')}>
+    {sections.map(({ to, icon: Icon, label }) => <Link key={to} to={to} activeOptions={{ exact: true, includeSearch: false }}
+      activeProps={{ className: 'nav-active' }} className="nav-item" title={t(label)} onClick={close}><Icon /><span>{t(label)}</span></Link>)}
+  </nav>
 }
 
 function SavedChannelShortcuts({ close }: { close: () => void }) {
