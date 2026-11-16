@@ -73,6 +73,133 @@ async function mockData(page: Page, statuses: SyncStatus[] = []) {
   }))
 }
 
+async function importSearchLibrary(page: Page, overrides: Partial<ReturnType<typeof emptyLibrary>> = {}) {
+  await mockData(page)
+  await page.goto('/settings')
+  await page.getByLabel('选择备份文件').setInputFiles({
+    name: 'search-library.json', mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify({ ...emptyLibrary(), channels: [channelId], playlists: [listId], ...overrides })),
+  })
+  await page.getByRole('button', { name: '确认合并' }).click()
+  await expect(page.getByRole('dialog')).toBeHidden()
+  await page.getByRole('link', { name: 'mytube 首页' }).click()
+}
+
+test('search opens with either shortcut or the header and returns focus on desktop and mobile', async ({ page }) => {
+  await page.goto('/')
+  const trigger = page.getByRole('button', { name: '打开搜索', exact: true }).filter({ visible: true })
+  const dialog = page.getByRole('dialog', { name: '搜索我的内容库' })
+  await expect(trigger).toBeVisible()
+  for (const shortcut of ['Control+k', 'Meta+k']) {
+    await page.keyboard.press(shortcut)
+    await expect(dialog.getByRole('combobox')).toBeFocused()
+    await page.keyboard.press('Escape')
+    await expect(dialog).toBeHidden()
+    await expect(trigger).toBeFocused()
+  }
+  await trigger.click()
+  await expect(dialog.getByRole('combobox')).toBeFocused()
+  await page.keyboard.press('Control+k')
+  await expect(dialog).toBeHidden()
+  await trigger.click()
+  await page.keyboard.press('Escape')
+  await page.setViewportSize({ width: 390, height: 844 })
+  await trigger.click()
+  await expect(dialog.getByRole('combobox')).toBeFocused()
+  await expect(dialog).toBeInViewport({ ratio: 1 })
+  expect(await dialog.evaluate(element => element.getBoundingClientRect().right)).toBeLessThanOrEqual(390)
+  await dialog.getByRole('button', { name: '关闭', exact: true }).click()
+  await expect(dialog).toBeHidden()
+  await expect(trigger).toBeFocused()
+})
+
+test('search updates results as you type and opens the keyboard-selected video', async ({ page }) => {
+  await importSearchLibrary(page)
+  await page.keyboard.press('Control+k')
+  const dialog = page.getByRole('dialog', { name: '搜索我的内容库' })
+  const input = dialog.getByRole('combobox')
+  await input.fill('频道')
+  await expect(dialog.getByRole('option')).toHaveCount(2)
+  await expect(page).toHaveURL('/')
+  await expect(dialog.getByRole('option', { name: /已选频道视频/ })).toBeVisible()
+  await expect(dialog.getByRole('option', { name: /跨频道列表成员/ })).toBeVisible()
+  await expect(dialog.getByText('在 YouTube 搜索', { exact: true })).toHaveCount(0)
+  await input.press('ArrowDown')
+  await input.press('Enter')
+  await expect(page).toHaveURL(`/watch?v=${b.id}`)
+  await expect(dialog).toBeHidden()
+})
+
+test('search preserves the saved start time when opening a favorite', async ({ page }) => {
+  await importSearchLibrary(page, { favorites: [a.id], contexts: { [a.id]: { t: '90s' } } })
+  await page.keyboard.press('Control+k')
+  const dialog = page.getByRole('dialog', { name: '搜索我的内容库' })
+  await dialog.getByRole('combobox').fill('已选')
+  await dialog.getByRole('option', { name: /已选频道视频/ }).click()
+  await expect(page).toHaveURL(`/watch?v=${a.id}&t=90s`)
+})
+
+for (const saved of [false, true]) {
+  test(`search opens YouTube in a new tab for an unmatched query in an ${saved ? 'existing' : 'empty'} library`, async ({ page, context }) => {
+    if (saved) await importSearchLibrary(page)
+    else await page.goto('/')
+    await expect(page.getByRole('button', { name: '打开搜索', exact: true }).filter({ visible: true })).toBeVisible()
+    await context.route('https://www.youtube.com/results?**', route => route.fulfill({ body: '<!doctype html><title>YouTube search</title>' }))
+    await page.keyboard.press('Control+k')
+    const dialog = page.getByRole('dialog', { name: '搜索我的内容库' })
+    const input = dialog.getByRole('combobox')
+    await input.fill('   ')
+    await expect(dialog.getByRole('option')).toHaveCount(0)
+    const query = '中文 & jazz/lofi?'
+    await input.fill(`  ${query}  `)
+    await expect(dialog.getByText('没有匹配的视频', { exact: true })).toBeVisible()
+    const youtube = dialog.getByRole('option', { name: /在 YouTube 搜索/ })
+    await expect(youtube).toContainText(query)
+    const opened = page.waitForEvent('popup')
+    if (saved) await youtube.click()
+    else await input.press('Enter')
+    const popup = await opened
+    await expect(popup).toHaveURL('https://www.youtube.com/results?search_query=%E4%B8%AD%E6%96%87+%26+jazz%2Flofi%3F')
+    expect(await popup.evaluate(() => window.opener === null)).toBe(true)
+    await expect(page).toHaveURL('/')
+    await popup.close()
+  })
+}
+
+test('search keeps loading and older responses from becoming results for a newer query', async ({ page }) => {
+  await importSearchLibrary(page)
+  await page.route('**/api/feed?**', async route => {
+    const { q } = route.request().postDataJSON()
+    await new Promise(resolve => setTimeout(resolve, q === '旧' ? 400 : 800))
+    await route.fulfill({ json: { items: q === '旧' ? [a] : [b], statuses: [] } })
+  })
+  await page.keyboard.press('Control+k')
+  const dialog = page.getByRole('dialog', { name: '搜索我的内容库' })
+  const input = dialog.getByRole('combobox')
+  const requested = page.waitForRequest(request => request.url().includes('/api/feed?') && request.postDataJSON().q === '旧')
+  await input.fill('旧')
+  await requested
+  await input.fill('新')
+  await expect(dialog.getByRole('status')).toBeVisible()
+  await expect(dialog.getByRole('option')).toHaveCount(0)
+  await expect(dialog.getByText('没有匹配的视频', { exact: true })).toHaveCount(0)
+  await expect(dialog.getByRole('option', { name: /跨频道列表成员/ })).toBeVisible()
+  await expect(dialog.getByRole('option', { name: /已选频道视频/ })).toHaveCount(0)
+  await input.fill('')
+  await expect(dialog.getByRole('option')).toHaveCount(0)
+})
+
+test('search shows a request failure instead of claiming there are no matches', async ({ page }) => {
+  await importSearchLibrary(page)
+  await page.route('**/api/feed?**', route => route.fulfill({ status: 500, json: { error: 'service' } }))
+  await page.keyboard.press('Control+k')
+  const dialog = page.getByRole('dialog', { name: '搜索我的内容库' })
+  await dialog.getByRole('combobox').fill('频道')
+  await expect(dialog.getByRole('alert')).toBeVisible()
+  await expect(dialog.getByText('没有匹配的视频', { exact: true })).toHaveCount(0)
+  await expect(dialog.getByRole('option', { name: /在 YouTube 搜索/ })).toHaveCount(0)
+})
+
 test('settings is available through the sidebar without duplicate navigation or labels', async ({ page }) => {
   await page.goto('/')
   const navigation = page.getByRole('navigation', { name: '内容库导航' })
