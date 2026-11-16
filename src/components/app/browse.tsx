@@ -1,18 +1,20 @@
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useInfiniteQuery, useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Bookmark, Clock3, LibraryBig, ListVideo, Play, SearchX, TvMinimalPlay } from 'lucide-react'
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy, Suspense, useEffect, useRef } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { TabNav } from '@/components/ui/tab-nav'
+import { Skeleton } from '@/components/ui/skeleton'
 import { api, safeImage, sourceQuery, videoQuery } from '@/lib/client'
 import type { Channel, Item, LibraryPage, Page, Playlist, SourceKind, Video } from '@/lib/data'
 import { armPlayback } from '@/lib/playback'
 import { saveFavorite, saveSource, useLibrary } from '@/lib/personal'
 import { channelId, playlistId } from '@/lib/youtube-url'
 import { useLocale } from '@/lib/i18n'
+import { cachedFeed } from '@/lib/query-cache'
 import { ChannelAvatar, ChannelLink, Cover, Loading, Notice, SyncLine, ToggleSource, videoLink } from './common'
 import { OpenAdd } from './shell'
 const VideoCard = lazy(() => import('./video-card'))
@@ -29,14 +31,17 @@ type FeedParams = Filter & { q?: string; onlyChannel?: string; favorites?: boole
 
 export function useFeed({ order, source, q, onlyChannel, favorites }: FeedParams) {
   const { ready, state } = useLibrary()
+  const client = useQueryClient()
   const channels = onlyChannel ? [onlyChannel] : favorites ? [] : source ? state.channels.filter(v => v === source) : state.channels
   const playlists = onlyChannel || favorites ? [] : source ? state.playlists.filter(v => v === source) : state.playlists
   const ids = onlyChannel || (source && source !== 'favorites') ? [] : state.favorites
   const input = { channels, playlists, favorites: ids, hidden: state.hidden, q, order: order ?? 'new' }
   return useInfiniteQuery({
-    queryKey: ['feed', input], enabled: ready && !!(channels.length || playlists.length || ids.length),
+    queryKey: ['feed', input], enabled: (ready || !!onlyChannel) && !!(channels.length || playlists.length || ids.length),
     queryFn: ({ pageParam, signal }) => api<LibraryPage>('feed', {}, signal, { ...input, cursor: pageParam }),
     initialPageParam: undefined as string | undefined,
+    initialData: () => cachedFeed(client, input),
+    initialDataUpdatedAt: 0,
     getNextPageParam: page => page.next,
     refetchInterval: query => {
       const first = query.state.data?.pages[0]
@@ -50,11 +55,12 @@ export function useFeed({ order, source, q, onlyChannel, favorites }: FeedParams
 function useSavedSources() {
   const { state, ready } = useLibrary()
   const client = useQueryClient()
+  const mountedAt = useRef(Date.now())
   const entries = [...state.channels.map(id => ({ id, kind: 'channel' as const })), ...state.playlists.map(id => ({ id, kind: 'playlist' as const }))]
   const all = useQueries({ queries: entries.map(s => ({ ...sourceQuery(s.kind, s.id), enabled: ready })) })
   const completed = all.map(q => q.dataUpdatedAt).join(',')
   useEffect(() => {
-    if (completed && completed.split(',').some(v => +v > 0)) void client.invalidateQueries({ queryKey: ['feed'] })
+    if (completed && completed.split(',').some(v => +v >= mountedAt.current)) void client.invalidateQueries({ queryKey: ['feed'] })
   }, [completed, client])
   return entries.map((entry, i) => ({ ...entry, query: all[i] }))
 }
@@ -65,7 +71,10 @@ function FeedControls({ filters, change, sources }: { filters: Filter; change: (
     {sources && <div className="chips" aria-label={t('filterSources')}>
       <Button variant={filters.source ? 'secondary' : 'solid'} size="sm" aria-pressed={!filters.source} onClick={() => change({ ...filters, source: undefined })}>{t('all')}</Button>
       {sources.map(s => <Button key={s.id} size="sm" variant={filters.source === s.id ? 'solid' : 'secondary'} aria-pressed={filters.source === s.id}
-        onClick={() => change({ ...filters, source: s.id })}>{s.query.data?.data.title ?? s.id}</Button>)}
+        disabled={!s.query.data && !s.query.isError} aria-busy={s.query.isPending}
+        aria-label={s.query.isPending ? t(s.kind === 'channel' ? 'loadingChannel' : 'loadingPlaylist') : undefined}
+        onClick={() => change({ ...filters, source: s.id })}>{s.query.data?.data.title ?? (s.query.isError
+          ? t(s.kind === 'channel' ? 'channel' : 'playlist') : <Skeleton className="h-3 w-24" />)}</Button>)}
       <Button variant={filters.source === 'favorites' ? 'solid' : 'secondary'} size="sm" aria-pressed={filters.source === 'favorites'} onClick={() => change({ ...filters, source: 'favorites' })}>{t('individualFavorites')}</Button>
     </div>}
     <NativeSelect aria-label={t('sort')} value={filters.order ?? 'new'} onChange={e => change({ ...filters, order: e.target.value === 'old' ? 'old' : undefined })}>
@@ -199,8 +208,9 @@ export function ChannelPage({ id, profile, tab = 'featured', filters, change }: 
     getNextPageParam: page => page.next,
   })
   if (query.isPending) return <section className="page"><Loading label={t('loadingChannel')} /></section>
-  if (query.error || !data) return <section className="page"><Notice title={t('channelOpenFailed')} error={query.error} retry={() => void query.refetch()} /></section>
+  if (!data) return <section className="page"><Notice title={t('channelOpenFailed')} error={query.error} retry={() => void query.refetch()} /></section>
   return <section className="page channel-page">
+    {query.error && <Notice error={query.error} retry={() => void query.refetch()} />}
     {safeImage(data.banner) ? <div className="channel-banner"><img src={safeImage(data.banner)} alt="" decoding="async" onError={e => { e.currentTarget.hidden = true }} /></div>
       : <div className="channel-banner banner-fallback" aria-hidden="true" />}
     <header className="channel-header">
@@ -268,11 +278,12 @@ export function PlaylistPage({ id }: { id?: string }) {
   })
   if (!id) return <section className="page"><Notice title={t('invalidPlaylist')} /></section>
   if (query.isPending) return <section className="page"><Loading label={t('loadingPlaylist')} /></section>
-  if (!list || query.error) return <section className="page"><Notice title={t('playlistOpenFailed')} error={query.error} retry={() => void query.refetch()} /></section>
+  if (!list) return <section className="page"><Notice title={t('playlistOpenFailed')} error={query.error} retry={() => void query.refetch()} /></section>
   const items = rows.data?.pages.flatMap(p => p.items) ?? []
   const first = items.find(i => i.video?.embeddable)
   return <section className="page playlist-page">
     <aside className="playlist-intro">
+      {query.error && <Notice error={query.error} retry={() => void query.refetch()} />}
       <Cover url={list.thumbnail} eager />
       <h1>{list.title}</h1><ChannelLink id={list.channelId}>{list.channelTitle}</ChannelLink>
       <p className="muted">{t('videoCount', { count: list.count })}</p>

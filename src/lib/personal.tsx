@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import { openDB, type DBSchema } from 'idb'
 import { toast } from 'sonner'
+import { useIsRestoring } from '@tanstack/react-query'
 import { emptyLibrary, MAX_PERSONAL, validateLibrary, type Library, type Progress, type WatchContext } from './library'
 import type { SourceKind } from './data'
 import { useLocale } from './i18n'
@@ -20,6 +21,7 @@ const LibraryContext = createContext<{
 } | null>(null)
 export function LibraryProvider({ children }: { children: ReactNode }) {
   const { t } = useLocale()
+  const restoring = useIsRestoring()
   const [state, setState] = useState(emptyLibrary)
   const [ready, setReady] = useState(false)
   const [error, setError] = useState(false)
@@ -58,7 +60,7 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       return false
     }
   }
-  return <LibraryContext.Provider value={{ state, ready, error, update }}>{children}</LibraryContext.Provider>
+  return <LibraryContext.Provider value={{ state, ready: ready && !restoring, error, update }}>{children}</LibraryContext.Provider>
 }
 
 export function useLibrary() {

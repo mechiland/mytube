@@ -6,8 +6,12 @@
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "binding": "ASSETS",
-    "not_found_handling": "single-page-application",
+    "not_found_handling": "none",
     "run_worker_first": ["/api", "/api/*", "/_serverFn/*", "/.env*", "/.dev.vars*"]
+  },
+  "placement": { "mode": "smart" },
+  "exports": {
+    "PageRenderer": { "type": "worker", "cache": { "enabled": true } }
   },
   "d1_databases": [
     { "binding": "DB", "database_name": "mytube", "database_id": "00000000-0000-4000-8000-000000000001" }

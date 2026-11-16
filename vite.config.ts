@@ -9,7 +9,7 @@ export default defineConfig({
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   plugins: [
     cloudflare({ viteEnvironment: { name: 'ssr' } }),
-    tanstackStart({ spa: { enabled: true, prerender: { outputPath: '/index.html' } } }),
+    tanstackStart(),
     react(),
     tailwind(),
   ],

@@ -1,7 +1,7 @@
 import { Link, type LinkProps } from '@tanstack/react-router'
 import { useQueryClient } from '@tanstack/react-query'
 import { ImageOff, RefreshCw, TriangleAlert } from 'lucide-react'
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -21,7 +21,9 @@ export function Notice({ error, title, retry }: { error?: Error | null; title?: 
 }
 export function Loading({ label }: { label?: string }) {
   const { t } = useLocale()
-  return <div className="loading" role="status"><Skeleton className="h-2 w-24" /><span>{label ?? t('loading')}</span></div>
+  return <div className="loading" role="status" aria-label={label ?? t('loading')}>
+    <Skeleton className="h-4 w-48" /><Skeleton className="h-3 w-32" />
+  </div>
 }
 export function Cover({ url, duration, eager }: { url: string; duration?: number; eager?: boolean }) {
   const src = safeImage(url)
@@ -58,13 +60,15 @@ export function ToggleSource({ source }: { source: Source }) {
 export function SyncLine({ status, kind, id, refetch }: { status?: SyncStatus; kind: SourceKind; id: string; refetch: () => void }) {
   const { t, locale, apiError, errorText } = useLocale()
   const [busy, setBusy] = useState(false)
+  const [localTime, setLocalTime] = useState(false)
+  useEffect(() => { setLocalTime(true) }, [])
   let detail = t(status?.complete ? 'synced' : 'syncing')
   if (status?.error) {
     detail = apiError(status.error)
     if (status.complete) detail = t('syncPaused', { detail })
   }
   return <div className="sync-line">
-    <span>{detail} · {t('syncCount', { count: status?.count ?? 0 })}{status?.checked && <> · {t('lastUpdated', { date: new Date(status.checked).toLocaleString(locale) })}</>}</span>
+    <span>{detail} · {t('syncCount', { count: status?.count ?? 0 })}{status?.checked && <> · {t('lastUpdated', { date: new Date(status.checked).toLocaleString(locale, localTime ? undefined : { timeZone: 'UTC' }) })}</>}</span>
     <Button variant="ghost" size="sm" disabled={busy} onClick={async () => {
       setBusy(true)
       try {

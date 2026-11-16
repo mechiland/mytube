@@ -27,6 +27,13 @@ test.describe('French browser', () => {
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
     await expect(page.getByRole('heading', { name: 'الإعدادات', exact: true })).toBeVisible()
 
+    await page.locator('.brand').click()
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ar')
+    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
+    await page.getByRole('navigation').getByRole('link', { name: 'الإعدادات', exact: true }).click()
+    await expect(page.getByRole('heading', { name: 'الإعدادات', exact: true })).toBeVisible()
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ar')
+
     await page.reload()
     await expect(language).toHaveValue('ar')
     await expect(page.getByRole('heading', { name: 'الإعدادات', exact: true })).toBeVisible()

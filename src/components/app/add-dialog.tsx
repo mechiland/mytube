@@ -10,6 +10,7 @@ import type { Source, Video } from '@/lib/data'
 import { saveFavorite, saveSource, useLibrary } from '@/lib/personal'
 import { parseYouTube, type Target } from '@/lib/youtube-url'
 import { useLocale } from '@/lib/i18n'
+import { cacheMetadata } from '@/lib/query-cache'
 import { ChannelAvatar, Cover, Notice } from './common'
 
 type Preview = { target: Target; value: Source | Video }
@@ -21,7 +22,9 @@ export default function AddDialog({ open, setOpen }: { open: boolean; setOpen: (
   const [saving, setSaving] = useState(false)
   const { state, update } = useLibrary()
   const client = useQueryClient()
-  const lookup = useMutation({ mutationFn: (value: string) => api<Preview>('resolve', { url: value }) })
+  const lookup = useMutation({ mutationFn: (value: string) => api<Preview>('resolve', { url: value }),
+    onSuccess: value => cacheMetadata(client, value.value),
+  })
   function reset() { setPreview(undefined); setValidation(undefined); lookup.reset() }
   function submit(event: FormEvent) {
     event.preventDefault()

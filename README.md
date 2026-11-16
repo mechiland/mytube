@@ -64,7 +64,7 @@ npm run deploy:check
 
 ## 未来部署到 Cloudflare
 
-部署使用一个 Worker 和一个 D1 数据库，附带 Workers Static Assets、Cron 和 Workers Secrets。TanStack Start 在构建时预渲染页面外壳，页面和静态资源交由资产服务，Start 服务端路由接管 `/api/*`。Vite 插件生成 `dist/server/wrangler.json`，Wrangler 从项目根目录读取重定向后的配置。 [Cloudflare TanStack Start 指南](https://developers.cloudflare.com/workers/framework-guides/web-apps/tanstack-start/)
+部署使用一个 Worker 和一个 D1 数据库，附带 Workers Static Assets、Cron 和 Workers Secrets。TanStack Start 为页面请求执行 SSR；播放页、播放列表页、频道及其子页直接预读已有 D1 元数据，并把查询结果传给浏览器复用。SSR 不等待 YouTube 或启动同步；浏览器恢复本地内容后自动在后台补齐完整内容库。Vite 插件生成 `dist/server/wrangler.json`，Wrangler 从项目根目录读取重定向后的配置。 [Cloudflare TanStack Start 指南](https://developers.cloudflare.com/workers/framework-guides/web-apps/tanstack-start/)
 
 1. 维护者登录 Cloudflare，然后用 `npx wrangler d1 create mytube` 创建数据库。把返回的 ID 填入 `wrangler.jsonc`，替换本地占位 UUID。
 2. 用 `npx wrangler d1 migrations apply mytube --remote` 迁移远程库，然后运行 `npm run build` 和 `npm run deploy:check`。
@@ -73,13 +73,37 @@ npm run deploy:check
 
 本地验收使用本地 D1。远程账号、部署域名、线上 CPU 和真实流量下的额度消耗需在实际部署后验证。
 
+## 本地缓存与首屏加速
+
+浏览器恢复本地内容后，自动在后台同步已订阅频道的全部视频、频道公开列表的全部分页、已保存播放列表的全部条目，以及收藏、历史和隐藏记录中的独立视频。同步不依赖当前页面或用户点击“加载更多”，也不会应用当前搜索词、来源筛选或隐藏过滤。每页数据与后续游标在同一个 IndexedDB 事务中提交，刷新、中断或重新打开后继续；断网、限流和服务错误会退避重试。多个标签页通过 Web Locks 协调，缺少 Web Locks 时使用本地租约。
+
+完整库保存在 `mytube-library` IndexedDB，分别存储频道与列表信息、视频、分页快照和同步任务。完整库没有 3,000 条记录的上限。`mytube-metadata` 中的 3,000 条上限只约束最近访问的 React Query 缓存，清理它不会删除完整库。背景同步只把当前需要的来源信息放入内存，避免启动时将整个视频库加载进 React Query。过期 28 天的数据会清理，活跃来源至少每日重新扫描；来源状态通常每 5 分钟检查一次，服务端尚未同步完整时每分钟继续检查。视频媒体本身由 YouTube 播放。
+
+同步会检查来源版本，分页失效时重新扫描，并在新快照验证完成前保留旧的完整快照；列表中的重复项和不可用条目保留原始位置。浏览、翻页、库内搜索和播放队列优先读取本地完整库，进入播放页直接复用视频元数据。页面关闭后浏览器内的任务停止，下次打开自动恢复；服务端 Cron 继续维护 D1 中的公共缓存，上游尚未获取的内容会随 D1 同步进度继续补齐。
+
+个人订阅、收藏、隐藏记录和进度继续保存在 `mytube` IndexedDB，公共元数据的共享缓存由 D1 提供。本地元数据不随个人备份重复导出。服务端根据语言 Cookie 和 `Accept-Language` 输出完整的本地化 HTML；必要等待使用骨架，频道筛选不再暂时显示原始 ID。
+
+Cloudflare 的配置如下：
+
+| 手段 | 当前行为 |
+| --- | --- |
+| Workers Static Assets | 带哈希的 `/assets/*` 由资产服务直出，浏览器缓存一年并标记 immutable |
+| Workers Cache | 只对 `PageRenderer` 命名入口开启，成功 HTML 缓存 60 秒，过期后最多 300 秒边返回旧内容边更新；按语言请求头和 Cookie 分开存储 |
+| 缓存边界 | 冷元数据占位、错误、重定向和个人 feed API 不缓存；浏览器每次导航重新验证 HTML |
+| Smart Placement | 开启自动部署位置优化；实际收益需上线后观察请求耗时 |
+| D1 读副本 | SSR 使用 `withSession('first-unconstrained')`；上线后需在 D1 控制台启用 Read Replication 才能使用全球副本 |
+
+没有开启 Worker 默认入口的全局缓存，因此静态资产继续保留直接服务的路径。SSR 缓存入口的请求按 Workers 规则计费，命中时不执行 React 渲染；部署默认隔离不同版本的缓存。 [Workers Cache 配置](https://developers.cloudflare.com/workers/cache/configuration/) [Workers Cache 计费](https://developers.cloudflare.com/workers/cache/#pricing) [Smart Placement](https://developers.cloudflare.com/workers/configuration/placement/) [D1 读副本](https://developers.cloudflare.com/d1/best-practices/read-replication/)
+
+`tests/ssr.spec.ts` 在禁用 JavaScript 时验证播放页、队列、播放列表、频道子页和多语言 HTML，并验证浏览器接管时复用元数据。`tests/ui.spec.ts` 覆盖刷新后断开元数据接口仍能浏览本地内容。`tests/background-sync.spec.ts` 验证停留在设置页时自动补齐未浏览的分页、中断后恢复和限流退避；`tests/metadata-sync.test.ts` 覆盖来源版本校验、上游未完成、失效分页和游标保护。
+
 ## 免费额度与同步预算
 
 2026 年 11 月 10 日核对的免费计划基线如下。Cloudflare 的账号额度由同账号资源共享。 [Workers 限制](https://developers.cloudflare.com/workers/platform/limits/) [D1 定价](https://developers.cloudflare.com/d1/platform/pricing/) [D1 限制](https://developers.cloudflare.com/d1/platform/limits/) [静态资产计费](https://developers.cloudflare.com/workers/static-assets/billing-and-limitations/)
 
 | 资源 | 免费基线 | mytube 默认限制 |
 | --- | --- | --- |
-| Workers | 100,000 请求/日，HTTP 与 Cron 各 10 ms CPU，50 子请求/次 | 静态导航和资产绕过 Worker。API 每 IP 每分钟 100 次，冷缓存查找及手动同步每分钟 18 次 |
+| Workers | 100,000 请求/日，HTTP 与 Cron 各 10 ms CPU，50 子请求/次 | 静态资产绕过 Worker，HTML 使用 SSR 和短时边缘缓存。API 每 IP 每分钟 100 次，冷缓存查找及手动同步每分钟 18 次 |
 | D1 | 500 万行读/日，10 万行写/日，账号 5 GB，单库 500 MB | 220 MB 缓存软阈值，每次同步最多 24 个成员。分批删除过期视频、来源、评论缓存和退役快照 |
 | YouTube Data API | 项目配额受 Google Cloud 配置约束 | 共享预算 3,500 次列表调用/日和 220 个同步批次/日。按美国太平洋时区计日 |
 

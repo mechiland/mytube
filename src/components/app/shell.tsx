@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation, useNavigate } from '@tanstack/react-router'
-import { QueryClient, QueryClientProvider, useQueries } from '@tanstack/react-query'
+import { hydrate, IsRestoringProvider, QueryClient, QueryClientProvider, useQueries, type DehydratedState } from '@tanstack/react-query'
 import { Bookmark, Clock3, House, ListVideo, Menu, Plus, Search, Settings2, TvMinimalPlay, X } from 'lucide-react'
 import { createContext, lazy, Suspense, useContext, useEffect, useState, type FormEvent } from 'react'
 import { Button } from '@/components/ui/button'
@@ -10,8 +10,10 @@ import { RequestError, sourceQuery } from '@/lib/client'
 import { LibraryProvider, useLibrary } from '@/lib/personal'
 import { useLocale } from '@/lib/i18n'
 import { MessageError } from '@/lib/message-error'
+import { persistQueryCache, restoreQueryCache } from '@/lib/query-cache'
 
 import { ChannelAvatar, Notice } from './common'
+import { LibrarySync } from './library-sync'
 
 function BrandMark() {
   return <span className="brand-mark"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M6 4.4v9.2l8-4.6z" fill="currentColor" /></svg></span>
@@ -32,19 +34,26 @@ const makeClient = () => new QueryClient({
 })
 
 const plumTheme = { ...defaultTheme, accentColor: 'plum', grayColor: 'auto' } as const
-export function ShellPlaceholder() {
-  return <Theme config={plumTheme}>
-    <div className="app-shell">
-      <header className="topbar" aria-busy="true">
-        <div className="brand-group"><span className="brand"><BrandMark /><span>mytube</span></span></div>
-      </header>
-      <main className="app-main" id="content" />
-    </div>
-  </Theme>
-}
-export function Providers() {
-  const [client] = useState(makeClient)
-  return <QueryClientProvider client={client}><LibraryProvider><Shell /></LibraryProvider></QueryClientProvider>
+export function Providers({ initialQueries }: { initialQueries?: DehydratedState | null }) {
+  const [client] = useState(() => {
+    const value = makeClient()
+    if (initialQueries) hydrate(value, initialQueries)
+    return value
+  })
+  const [restoring, setRestoring] = useState(true)
+  useEffect(() => {
+    let active = true
+    let unsubscribe: (() => void) | undefined
+    void restoreQueryCache(client).catch(() => {}).finally(() => {
+      if (!active) return
+      unsubscribe = persistQueryCache(client)
+      setRestoring(false)
+    })
+    return () => { active = false; unsubscribe?.() }
+  }, [client])
+  return <QueryClientProvider client={client}><IsRestoringProvider value={restoring}>
+    <LibraryProvider><Shell /><LibrarySync /></LibraryProvider>
+  </IsRestoringProvider></QueryClientProvider>
 }
 function Shell() {
   const { t, dir } = useLocale()
