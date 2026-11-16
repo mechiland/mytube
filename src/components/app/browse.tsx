@@ -27,9 +27,9 @@ export const feedSearch = (s: Record<string, unknown>): Filter => ({
 export const resultsSearch = (s: Record<string, unknown>) => ({
   ...feedSearch(s), search_query: typeof s.search_query === 'string' ? s.search_query.trim().slice(0, 120) : '',
 })
-type FeedParams = Filter & { q?: string; onlyChannel?: string; favorites?: boolean }
+type FeedParams = Filter & { q?: string; onlyChannel?: string; favorites?: boolean; enabled?: boolean }
 
-export function useFeed({ order, source, q, onlyChannel, favorites }: FeedParams) {
+export function useFeed({ order, source, q, onlyChannel, favorites, enabled = true }: FeedParams) {
   const { ready, state } = useLibrary()
   const client = useQueryClient()
   const channels = onlyChannel ? [onlyChannel] : favorites ? [] : source ? state.channels.filter(v => v === source) : state.channels
@@ -37,7 +37,7 @@ export function useFeed({ order, source, q, onlyChannel, favorites }: FeedParams
   const ids = onlyChannel || (source && source !== 'favorites') ? [] : state.favorites
   const input = { channels, playlists, favorites: ids, hidden: state.hidden, q, order: order ?? 'new' }
   return useInfiniteQuery({
-    queryKey: ['feed', input], enabled: (ready || !!onlyChannel) && !!(channels.length || playlists.length || ids.length),
+    queryKey: ['feed', input], enabled: enabled && (ready || !!onlyChannel) && !!(channels.length || playlists.length || ids.length),
     queryFn: ({ pageParam, signal }) => api<LibraryPage>('feed', {}, signal, { ...input, cursor: pageParam }),
     initialPageParam: undefined as string | undefined,
     initialData: () => cachedFeed(client, input),

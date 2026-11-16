@@ -1,9 +1,8 @@
-import { Link, Outlet, useLocation, useNavigate } from '@tanstack/react-router'
+import { Link, Outlet, useLocation } from '@tanstack/react-router'
 import { hydrate, IsRestoringProvider, QueryClient, QueryClientProvider, useQueries, type DehydratedState } from '@tanstack/react-query'
-import { Bookmark, Clock3, House, ListVideo, Menu, Plus, Search, Settings2, TvMinimalPlay, X } from 'lucide-react'
-import { createContext, lazy, Suspense, useContext, useEffect, useState, type FormEvent } from 'react'
+import { Bookmark, Clock3, House, ListVideo, Menu, Plus, Search, Settings2, TvMinimalPlay } from 'lucide-react'
+import { createContext, lazy, Suspense, useContext, useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group'
 import { Toaster } from '@/components/ui/sonner'
 import { defaultTheme, Theme } from '@/lib/theme/theme'
 import { RequestError, sourceQuery } from '@/lib/client'
@@ -19,6 +18,7 @@ function BrandMark() {
   return <span className="brand-mark"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M6 4.4v9.2l8-4.6z" fill="currentColor" /></svg></span>
 }
 const AddDialog = lazy(() => import('./add-dialog'))
+const SearchDialog = lazy(() => import('./search-dialog'))
 const AddContext = createContext(() => {})
 
 const sections = [
@@ -58,18 +58,29 @@ export function Providers({ initialQueries }: { initialQueries?: DehydratedState
 function Shell() {
   const { t, dir } = useLocale()
   const location = useLocation()
-  const navigate = useNavigate()
   const { state, error } = useLibrary()
   const [systemDark, setSystemDark] = useState(false)
   const [rail, setRail] = useState(true)
   const [mobile, setMobile] = useState(false)
   const [add, setAdd] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
+  const [shortcut, setShortcut] = useState('Ctrl K')
+  const searchTrigger = useRef<HTMLButtonElement>(null)
+  const mobileSearchTrigger = useRef<HTMLButtonElement>(null)
   const queryText = typeof (location.search as Record<string, unknown>).search_query === 'string'
     ? String((location.search as Record<string, unknown>).search_query) : ''
-  const [q, setQ] = useState(queryText)
-  useEffect(() => { setQ(queryText) }, [queryText])
   useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.defaultPrevented || event.isComposing || event.repeat || event.altKey || !(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== 'k') return
+      if (!searchOpen && document.querySelector('[role="dialog"]')) return
+      event.preventDefault()
+      setSearchOpen(open => !open)
+    }
+    document.addEventListener('keydown', onKeyDown, true)
+    return () => document.removeEventListener('keydown', onKeyDown, true)
+  }, [searchOpen])
+  useEffect(() => {
+    setShortcut(/Mac|iPhone|iPad/.test(navigator.platform) ? '⌘ K' : 'Ctrl K')
     const match = window.matchMedia('(prefers-color-scheme: dark)')
     const update = () => setSystemDark(match.matches)
     update()
@@ -77,11 +88,6 @@ function Shell() {
     return () => match.removeEventListener('change', update)
   }, [])
   const dark = state.theme === 'dark' || (state.theme === 'system' && systemDark)
-  function search(event: FormEvent) {
-    event.preventDefault()
-    setSearchOpen(false)
-    void navigate({ to: '/results', search: { search_query: q.trim() } })
-  }
   const watch = location.pathname === '/watch'
   return <Theme config={{ ...plumTheme, appearance: dark ? 'dark' : 'light' }}>
     <div className="app-shell" data-rail={rail} data-watch={watch}>
@@ -93,14 +99,12 @@ function Shell() {
           }}><Menu /></Button>
           <Link to="/" className="brand" aria-label={t('brandHome')}><BrandMark /><span>mytube</span></Link>
         </div>
-        <form onSubmit={search} className={searchOpen ? 'top-search search-open' : 'top-search'} role="search">
-          <InputGroup className="search-box">
-            <InputGroupInput autoComplete="off" aria-label={t('searchLibrary')} maxLength={120} placeholder={t('searchLibrary')} value={q} onChange={e => setQ(e.target.value)} />
-            <InputGroupAddon align="inline-end"><InputGroupButton type="submit" aria-label={t('search')}><Search /></InputGroupButton></InputGroupAddon>
-          </InputGroup>
-        </form>
+        <Button ref={searchTrigger} variant="outline" className="top-search" aria-label={t('openSearch')} aria-haspopup="dialog" aria-expanded={searchOpen}
+          aria-keyshortcuts="Meta+K Control+K" onClick={() => setSearchOpen(true)}>
+          <Search data-icon="inline-start" /><span>{t('searchLibrary')}</span><kbd className="search-shortcut" aria-hidden="true">{shortcut}</kbd>
+        </Button>
         <div className="top-actions">
-          <Button variant="ghost" size="icon" className="mobile-search" aria-label={t('openSearch')} onClick={() => setSearchOpen(v => !v)}>{searchOpen ? <X /> : <Search />}</Button>
+          <Button ref={mobileSearchTrigger} variant="ghost" size="icon" className="mobile-search" aria-label={t('openSearch')} aria-haspopup="dialog" aria-expanded={searchOpen} onClick={() => setSearchOpen(true)}><Search /></Button>
           <Button variant="soft" className="add-button" aria-label={t('addContent')} onClick={() => setAdd(true)}><Plus data-icon="inline-start" /><span>{t('addContent')}</span></Button>
         </div>
       </header>
@@ -118,6 +122,8 @@ function Shell() {
       </main>
     </div>
     {add && <Suspense fallback={null}><AddDialog open={add} setOpen={setAdd} /></Suspense>}
+    {searchOpen && <Suspense fallback={null}><SearchDialog initialQuery={queryText} close={() => setSearchOpen(false)}
+      returnFocus={() => window.matchMedia('(max-width: 760px)').matches ? mobileSearchTrigger.current : searchTrigger.current} /></Suspense>}
     <Toaster theme={dark ? 'dark' : 'light'} position={dir === 'rtl' ? 'bottom-left' : 'bottom-right'} dir={dir} containerAriaLabel={t('notifications')} />
   </Theme>
 }
