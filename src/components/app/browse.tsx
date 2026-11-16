@@ -15,7 +15,7 @@ import { saveFavorite, saveSource, useLibrary } from '@/lib/personal'
 import { channelId, playlistId } from '@/lib/youtube-url'
 import { useLocale } from '@/lib/i18n'
 import { cachedFeed } from '@/lib/query-cache'
-import { ChannelAvatar, ChannelLink, Cover, Loading, Notice, SyncLine, ToggleSource, videoLink } from './common'
+import { ChannelAvatar, ChannelLink, Cover, Loading, Notice, SyncLine, ToggleSource, VideoCover, videoLink } from './common'
 import { OpenAdd } from './shell'
 const VideoCard = lazy(() => import('./video-card'))
 
@@ -260,7 +260,7 @@ export function PlaylistItems({ items, list, active }: { items: Item[]; list: st
   return <ol className="playlist-items">{items.map(item => <li key={item.itemId} className={active === item.position ? 'queue-current' : undefined}>
     <span className="item-position" aria-label={t('itemPosition', { position: item.position + 1 })}>{active === item.position ? <Play /> : number(item.position + 1)}</span>
     {item.video ? <Link {...videoLink(item.video.id, { list, index: item.position + 1 })} className="playlist-item-link" aria-current={active === item.position ? 'true' : undefined}>
-      <Cover url={item.video.thumbnail} duration={item.video.duration} />
+      <VideoCover video={item.video} duration={item.video.duration} />
       <div><strong>{item.video.title}</strong><p className="muted">{item.video.channelTitle}</p>{!item.video.embeddable && <p className="muted">{t('embedUnavailable')}</p>}</div>
     </Link> : <div className="playlist-item-link unavailable"><Cover url="" /><div><strong>{t('videoUnavailable')}</strong><p className="muted">{t('positionPreserved')}</p></div></div>}
   </li>)}</ol>

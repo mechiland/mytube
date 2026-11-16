@@ -190,6 +190,8 @@
   "lightTheme": "Angavu",
   "darkTheme": "Meusi",
   "loopPlayback": "Tanzisha uchezaji mfululizo mwishoni mwa orodha ya kucheza",
+  "videoFrames": "Onyesha fremu za video badala ya vijipicha",
+  "videoFramesHelp": "Onyesha fremu kutoka katikati ya kila video ili kupunguza vijipicha vinavyovuruga au kupotosha. Zima ili kurudisha vijipicha asili.",
   "hiddenVideos": "Video zilizofichwa",
   "noHiddenVideos": "Hakuna video zilizofichwa.",
   "videoRestored": "Video imerejeshwa",

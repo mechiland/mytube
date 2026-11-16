@@ -8,7 +8,7 @@ import { Spinner } from '@/components/ui/spinner'
 import { useLocale } from '@/lib/i18n'
 import { useLibrary } from '@/lib/personal'
 import { useFeed } from './browse'
-import { Cover, Notice, videoLink } from './common'
+import { Notice, VideoCover, videoLink } from './common'
 
 export default function SearchDialog({ initialQuery, close, returnFocus }: {
   initialQuery: string; close: () => void; returnFocus: () => HTMLElement | null
@@ -56,7 +56,7 @@ function SearchContent({ initialQuery, close }: { initialQuery: string; close: (
           close()
           void navigate(videoLink(video.id, state.contexts[video.id]))
         }}>
-          <Cover url={video.thumbnail} duration={video.duration} />
+          <VideoCover video={video} duration={video.duration} />
           <span className="search-result-copy"><span className="search-result-title">{video.title}</span><span className="search-result-channel">{video.channelTitle}</span></span>
           <CommandShortcut><CornerDownLeft aria-hidden="true" /></CommandShortcut>
         </CommandItem>)}

@@ -190,6 +190,8 @@
   "lightTheme": "Svetlý",
   "darkTheme": "Tmavý",
   "loopPlayback": "Slučka súvislého prehrávania na konci zoznamu skladieb",
+  "videoFrames": "Zobrazovať snímky videa namiesto miniatúr",
+  "videoFramesHelp": "Zobrazuje snímku zo stredu každého videa namiesto rušivých alebo zavádzajúcich miniatúr. Vypnutím obnovíte pôvodné miniatúry.",
   "hiddenVideos": "Skryté videá",
   "noHiddenVideos": "Žiadne skryté videá.",
   "videoRestored": "Video bolo obnovené",

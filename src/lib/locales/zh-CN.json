@@ -190,6 +190,8 @@
   "lightTheme": "浅色",
   "darkTheme": "深色",
   "loopPlayback": "连续播放到列表结尾时循环",
+  "videoFrames": "用视频画面替代封面",
+  "videoFramesHelp": "开启后显示视频中段的画面，减少夸张或误导性封面的干扰。关闭后恢复原始封面。",
   "hiddenVideos": "隐藏的视频",
   "noHiddenVideos": "没有隐藏的视频。",
   "videoRestored": "已恢复视频",

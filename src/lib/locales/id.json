@@ -190,6 +190,8 @@
   "lightTheme": "Terang",
   "darkTheme": "Gelap",
   "loopPlayback": "Ulangi pemutaran terus-menerus di akhir daftar putar",
+  "videoFrames": "Tampilkan cuplikan video alih-alih thumbnail",
+  "videoFramesHelp": "Tampilkan gambar dari pertengahan setiap video untuk mengurangi thumbnail yang mengganggu atau menyesatkan. Nonaktifkan untuk mengembalikan thumbnail asli.",
   "hiddenVideos": "Video tersembunyi",
   "noHiddenVideos": "Tidak ada video tersembunyi.",
   "videoRestored": "Video dipulihkan",

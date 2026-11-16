@@ -190,6 +190,8 @@
   "lightTheme": "Svijetla",
   "darkTheme": "Tamna",
   "loopPlayback": "Neprekidna reprodukcija u petlji na kraju popisa za reprodukciju",
+  "videoFrames": "Prikaži kadrove videa umjesto minijatura",
+  "videoFramesHelp": "Prikazuje kadar iz sredine svakog videa kako bi se izbjegle ometajuće ili obmanjujuće minijature. Isključite za izvorne minijature.",
   "hiddenVideos": "Skriveni video zapisi",
   "noHiddenVideos": "Nema skrivenih videozapisa.",
   "videoRestored": "Video vraćen",

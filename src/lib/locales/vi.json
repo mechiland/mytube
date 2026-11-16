@@ -190,6 +190,8 @@
   "lightTheme": "Sáng",
   "darkTheme": "Tối",
   "loopPlayback": "Lặp lại phát lại liên tục ở cuối danh sách phát",
+  "videoFrames": "Hiển thị khung hình video thay cho ảnh thu nhỏ",
+  "videoFramesHelp": "Hiển thị một khung hình ở giữa mỗi video để giảm ảnh thu nhỏ gây xao nhãng hoặc hiểu lầm. Tắt để khôi phục ảnh thu nhỏ gốc.",
   "hiddenVideos": "Video ẩn",
   "noHiddenVideos": "Không có video ẩn.",
   "videoRestored": "Đã khôi phục video",

@@ -190,6 +190,8 @@
   "lightTheme": "Açık",
   "darkTheme": "Koyu",
   "loopPlayback": "Bir çalma listesinin sonunda sürekli oynatmayı döngüye al",
+  "videoFrames": "Küçük resimler yerine video karelerini göster",
+  "videoFramesHelp": "Dikkat dağıtan veya yanıltıcı küçük resimleri azaltmak için her videonun ortasından bir kare gösterir. Orijinal küçük resimlere dönmek için kapatın.",
   "hiddenVideos": "Gizli videolar",
   "noHiddenVideos": "Gizli video yok.",
   "videoRestored": "Video geri yüklendi",
