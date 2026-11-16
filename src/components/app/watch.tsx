@@ -15,6 +15,7 @@ import { LoadMore, PlaylistItems, useFeed } from './browse'
 import { ChannelAvatar, ChannelLink, Loading, Notice } from './common'
 import { Comments } from './comments'
 import { Player } from './player'
+import { useTheaterHeader } from './shell'
 import VideoCard from './video-card'
 
 type Search = ReturnType<typeof watchSearch>
@@ -37,6 +38,7 @@ function WatchContent({ search, video, notice }: { search: Search; video: Video;
   const [continuous, setContinuous] = useState(false)
   const { t, locale, dir } = useLocale()
   const [theater, setTheater] = useState(false)
+  useTheaterHeader(theater)
   const [copied, setCopied] = useState(false)
   const author = useQuery(sourceQuery('channel', video.channelId, undefined, false))
   const listQuery = useQuery({ ...sourceQuery('playlist', list), refetchInterval: q => q.state.data?.status?.complete === false && !q.state.data.status.error ? 60_000 : false })
