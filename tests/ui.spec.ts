@@ -11,7 +11,7 @@ const listId = 'PLtestplaylist'
 const thumbnail = 'https://i.ytimg.com/vi/aaaaaaaaaaa/hqdefault.jpg'
 const a: Video = { kind: 'video', id: 'aaaaaaaaaaa', title: '已选频道视频', thumbnail, description: '示例描述', published: '2025-01-01T12:00:00Z',
   channelId, channelTitle: '频道 A', duration: 100, embeddable: true }
-const b: Video = { ...a, id: 'bbbbbbbbbbb', title: '跨频道列表成员', channelId: otherId, channelTitle: '频道 B' }
+const b: Video = { ...a, id: 'bbbbbbbbbbb', title: '跨频道列表成员', channelId: otherId, channelTitle: '频道 B', published: '2024-12-31T12:00:00Z' }
 const channel: Channel = { kind: 'channel', id: channelId, title: '频道 A', thumbnail: '', description: '频道简介', uploads: 'UU' + 'a'.repeat(22) }
 const list: Playlist = { kind: 'playlist', id: listId, title: '例子播放列表', thumbnail: '', description: '列表简介', count: 4, channelId, channelTitle: '频道 A' }
 const channelLists = [list, ...['第二个列表', '第三个列表', '第四个列表'].map((title, i) => ({ ...list, title, id: `${listId}${i}` }))]
