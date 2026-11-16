@@ -1,4 +1,12 @@
 {
+  "youtubeQuota": "Cotă API YouTube",
+  "quotaUsage": "{used} / {limit} unități folosite astăzi",
+  "quotaRemaining": "{count} unități rămase",
+  "quotaReset": "Resetare: {date} (miezul nopții, ora Pacificului)",
+  "quotaScope": "Partajată de toți utilizatorii site-ului, inclusiv sincronizarea în fundal. Fiecare cerere externă consumă 1 unitate; citirile din cache nu consumă cotă.",
+  "quotaBudgetHelp": "Limita este bugetul zilnic al site-ului, nu întreaga cotă a proiectului Google Cloud. Apelurile din alte aplicații nu sunt incluse.",
+  "quotaConsole": "Vezi cota Google Cloud",
+  "quotaRefresh": "Actualizează cota",
   "appTitle": "mytube · Biblioteca mea",
   "appDescription": "mytube este o bibliotecă personală pentru videoclipurile, canalele și listele de redare pe care le alegeți.",
   "pageNotFound": "Pagina nu a fost găsită",

@@ -1,4 +1,12 @@
 {
+  "youtubeQuota": "Limit YouTube API",
+  "quotaUsage": "Dziś wykorzystano {used} / {limit} jednostek",
+  "quotaRemaining": "Pozostało {count} jednostek",
+  "quotaReset": "Reset: {date} (północ czasu pacyficznego)",
+  "quotaScope": "Wspólny dla wszystkich użytkowników witryny, w tym synchronizacji w tle. Każde żądanie zewnętrzne zużywa 1 jednostkę; odczyty z pamięci podręcznej nie zużywają limitu.",
+  "quotaBudgetHelp": "Limit to dzienny budżet witryny, a nie pełny limit projektu Google Cloud. Wywołania z innych aplikacji nie są uwzględnione.",
+  "quotaConsole": "Zobacz limit Google Cloud",
+  "quotaRefresh": "Odśwież limit",
   "appTitle": "mytube · Moja biblioteka",
   "appDescription": "mytube to osobista biblioteka zawierająca wybrane filmy, kanały i playlisty.",
   "pageNotFound": "Nie znaleziono strony",

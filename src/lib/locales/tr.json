@@ -1,4 +1,12 @@
 {
+  "youtubeQuota": "YouTube API kotası",
+  "quotaUsage": "Bugün {used} / {limit} birim kullanıldı",
+  "quotaRemaining": "{count} birim kaldı",
+  "quotaReset": "Sıfırlanma: {date} (Pasifik saatine göre gece yarısı)",
+  "quotaScope": "Arka plan eşitlemesi dahil sitenin tüm kullanıcıları arasında paylaşılır. Her dış istek 1 birim tüketir; önbellek okumaları kota tüketmez.",
+  "quotaBudgetHelp": "Sınır, sitenin günlük bütçesidir; Google Cloud projesinin tam kotası değildir. Diğer uygulamalardan gelen çağrılar dahil değildir.",
+  "quotaConsole": "Google Cloud kotasını görüntüle",
+  "quotaRefresh": "Kotayı yenile",
   "appTitle": "mytube · Kitaplığım",
   "appDescription": "mytube seçtiğiniz videolar, kanallar ve oynatma listeleri için kişisel bir kitaplıktır.",
   "pageNotFound": "Sayfa bulunamadı",

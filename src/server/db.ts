@@ -1,4 +1,4 @@
-import { errors } from '../lib/data'
+import { errors, type ApiQuota } from '../lib/data'
 
 export interface Bindings {
   DB: D1Database | D1DatabaseSession
@@ -20,6 +20,22 @@ export class ApiError extends Error {
   constructor(public code: string, public status: number, message = errors[code] ?? errors.service) { super(message) }
 }
 export function fail(code: string, status = 400): never { throw new ApiError(code, status) }
+
+export async function readQuota(env: Bindings): Promise<ApiQuota> {
+  const day = apiDay()
+  const row = await stmt(env, 'SELECT api,blocked FROM budget WHERE day=?', day).first<{ api: number; blocked: number }>()
+  const used = row?.api ?? 0
+  const blocked = !!row?.blocked
+  const limit = bounded(env.API_DAILY_LIMIT, 3500, 9500)
+  // Pacific midnight falls at 07:00 UTC in daylight time, otherwise 08:00 UTC.
+  const standardReset = Date.parse(`${day}T08:00:00Z`) + dayMs
+  const daylightReset = standardReset - 3600_000
+  return {
+    day, resetsAt: apiDay(daylightReset) === day ? standardReset : daylightReset,
+    used, limit, remaining: blocked ? 0 : Math.max(0, limit - used), blocked,
+    configured: !!env.YOUTUBE_API_KEY?.trim(),
+  }
+}
 
 export async function charge(env: Bindings, column: 'api' | 'sync') {
   const limit = column === 'api' ? bounded(env.API_DAILY_LIMIT, 3500, 9500) : bounded(env.SYNC_DAILY_LIMIT, 220, 650)

@@ -1,4 +1,12 @@
 {
+  "youtubeQuota": "Cota da API do YouTube",
+  "quotaUsage": "{used} / {limit} unidades usadas hoje",
+  "quotaRemaining": "{count} unidades restantes",
+  "quotaReset": "Redefinição: {date} (meia-noite, horário do Pacífico)",
+  "quotaScope": "Compartilhada por todos os usuários do site, incluindo a sincronização em segundo plano. Cada solicitação externa usa 1 unidade; leituras do cache não consomem cota.",
+  "quotaBudgetHelp": "O limite é o orçamento diário deste site, não a cota total do projeto do Google Cloud. Chamadas de outros apps não estão incluídas.",
+  "quotaConsole": "Ver cota do Google Cloud",
+  "quotaRefresh": "Atualizar cota",
   "appTitle": "mytube · Minha Biblioteca",
   "appDescription": "mytube é uma biblioteca pessoal para vídeos, canais e playlists que você escolher.",
   "pageNotFound": "Página não encontrada",

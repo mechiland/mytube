@@ -8,6 +8,7 @@ import { Field, FieldContent, FieldDescription, FieldGroup, FieldLabel } from '@
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { Switch } from '@/components/ui/switch'
 import { Loading, Notice, videoLink } from '@/components/app/common'
+import { YouTubeQuota } from '@/components/app/youtube-quota'
 import { Link } from '@tanstack/react-router'
 import { emptyLibrary, MAX_BACKUP_BYTES, mergeLibrary, parseBackup, type Library } from '@/lib/library'
 import { useLibrary } from '@/lib/personal'
@@ -75,6 +76,7 @@ function Settings() {
           </Field>
         </FieldGroup>
       </section>
+    <YouTubeQuota />
     {!ready ? <Loading /> : <>
       <section className="settings-section"><h2>{t('hiddenVideos')}</h2>
         {!state.hidden.length ? <p className="muted">{t('noHiddenVideos')}</p> : <>

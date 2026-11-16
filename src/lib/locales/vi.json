@@ -1,4 +1,12 @@
 {
+  "youtubeQuota": "Hạn mức API YouTube",
+  "quotaUsage": "Hôm nay đã dùng {used} / {limit} đơn vị",
+  "quotaRemaining": "Còn {count} đơn vị",
+  "quotaReset": "Đặt lại: {date} (nửa đêm theo giờ Thái Bình Dương)",
+  "quotaScope": "Dùng chung cho mọi người dùng của trang, kể cả đồng bộ nền. Mỗi yêu cầu bên ngoài dùng 1 đơn vị; đọc bộ nhớ đệm không tốn hạn mức.",
+  "quotaBudgetHelp": "Giới hạn là ngân sách hằng ngày của trang, không phải toàn bộ hạn mức dự án Google Cloud. Không tính các lệnh gọi từ ứng dụng khác.",
+  "quotaConsole": "Xem hạn mức Google Cloud",
+  "quotaRefresh": "Làm mới hạn mức",
   "appTitle": "mytube · Thư viện của tôi",
   "appDescription": "mytube là thư viện cá nhân dành cho các video, kênh và danh sách phát bạn chọn.",
   "pageNotFound": "Không tìm thấy trang",

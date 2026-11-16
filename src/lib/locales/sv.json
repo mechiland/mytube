@@ -1,4 +1,12 @@
 {
+  "youtubeQuota": "YouTube API-kvot",
+  "quotaUsage": "{used} / {limit} enheter använda idag",
+  "quotaRemaining": "{count} enheter kvar",
+  "quotaReset": "Återställs: {date} (midnatt, Stillahavstid)",
+  "quotaScope": "Delas av alla användare på webbplatsen, inklusive bakgrundssynkronisering. Varje externt anrop använder 1 enhet; läsning från cache använder ingen kvot.",
+  "quotaBudgetHelp": "Gränsen är webbplatsens dagliga budget, inte hela kvoten för Google Cloud-projektet. Anrop från andra appar räknas inte.",
+  "quotaConsole": "Visa Google Cloud-kvot",
+  "quotaRefresh": "Uppdatera kvot",
   "appTitle": "mytube · Mitt bibliotek",
   "appDescription": "mytube är ett personligt bibliotek för de videor, kanaler och spellistor du väljer.",
   "pageNotFound": "Sidan hittades inte",

@@ -1,4 +1,12 @@
 {
+  "youtubeQuota": "YouTube API 配額",
+  "quotaUsage": "今日已用 {used} / {limit} 單位",
+  "quotaRemaining": "剩餘 {count} 單位",
+  "quotaReset": "下次重設：{date}（太平洋時間午夜）",
+  "quotaScope": "本站所有使用者共用，包含背景同步。每次上游請求計 1 單位，讀取快取不消耗配額。",
+  "quotaBudgetHelp": "上限為本站每日預算，並非 Google Cloud 專案的完整配額；其他應用程式的呼叫不計入此統計。",
+  "quotaConsole": "查看 Google Cloud 配額",
+  "quotaRefresh": "重新整理配額",
   "appTitle": "mytube · 我的內容庫",
   "appDescription": "mytube 是你的個人內容庫，收錄你選擇的影片、頻道和播放清單。",
   "pageNotFound": "找不到頁面",

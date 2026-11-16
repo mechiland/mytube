@@ -1,4 +1,12 @@
 {
+  "youtubeQuota": "YouTube API 할당량",
+  "quotaUsage": "오늘 사용량 {used} / {limit} 단위",
+  "quotaRemaining": "{count} 단위 남음",
+  "quotaReset": "초기화: {date} (태평양 시간 자정)",
+  "quotaScope": "백그라운드 동기화를 포함하여 이 사이트의 모든 사용자가 공유합니다. 업스트림 요청마다 1단위를 사용하며 캐시 읽기는 사용하지 않습니다.",
+  "quotaBudgetHelp": "한도는 이 사이트의 일일 예산이며 Google Cloud 프로젝트의 전체 할당량이 아닙니다. 다른 앱의 호출은 포함되지 않습니다.",
+  "quotaConsole": "Google Cloud 할당량 보기",
+  "quotaRefresh": "할당량 새로고침",
   "appTitle": "mytube · 내 라이브러리",
   "appDescription": "mytube는 귀하가 선택한 동영상, 채널, 재생목록을 위한 개인 라이브러리입니다.",
   "pageNotFound": "페이지를 찾을 수 없습니다",

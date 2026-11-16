@@ -1,4 +1,12 @@
 {
+  "youtubeQuota": "Kvóta YouTube API",
+  "quotaUsage": "Dnes využito {used} / {limit} jednotek",
+  "quotaRemaining": "Zbývá {count} jednotek",
+  "quotaReset": "Obnovení: {date} (půlnoc tichomořského času)",
+  "quotaScope": "Sdílená všemi uživateli webu včetně synchronizace na pozadí. Každý externí požadavek spotřebuje 1 jednotku; čtení z mezipaměti kvótu nespotřebovává.",
+  "quotaBudgetHelp": "Limit je denní rozpočet webu, nikoli celá kvóta projektu Google Cloud. Volání z jiných aplikací se nezapočítávají.",
+  "quotaConsole": "Zobrazit kvótu Google Cloud",
+  "quotaRefresh": "Aktualizovat kvótu",
   "appTitle": "mytube · Moje knihovna",
   "appDescription": "mytube je osobní knihovna pro videa, kanály a seznamy videí, které si vyberete.",
   "pageNotFound": "Stránka nenalezena",

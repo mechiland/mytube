@@ -1,4 +1,12 @@
 {
+  "youtubeQuota": "YouTube API -kiintiö",
+  "quotaUsage": "Tänään käytetty {used} / {limit} yksikköä",
+  "quotaRemaining": "{count} yksikköä jäljellä",
+  "quotaReset": "Nollaus: {date} (keskiyöllä Tyynenmeren aikaa)",
+  "quotaScope": "Jaettu sivuston kaikkien käyttäjien kesken, myös taustasynkronoinnille. Kukin ulkoinen pyyntö kuluttaa 1 yksikön; välimuistin lukeminen ei kuluta kiintiötä.",
+  "quotaBudgetHelp": "Raja on sivuston päiväbudjetti, ei Google Cloud -projektin koko kiintiö. Muiden sovellusten kutsuja ei lasketa mukaan.",
+  "quotaConsole": "Näytä Google Cloud -kiintiö",
+  "quotaRefresh": "Päivitä kiintiö",
   "appTitle": "mytube · Oma kirjasto",
   "appDescription": "mytube on henkilökohtainen kirjasto valitsemillesi videoille, kanaville ja soittolistoille.",
   "pageNotFound": "Sivua ei löydy",

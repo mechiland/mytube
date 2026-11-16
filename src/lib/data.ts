@@ -18,6 +18,9 @@ export type Comment = { id: string; author: string; channelId?: string; text: st
 export type Page<T> = { items: T[]; next?: string }
 export type SyncStatus = { kind: SourceKind; id: string; count: number; complete: boolean; checked: number; error?: string; due: number }
 export type LibraryPage = Page<Video> & { statuses: SyncStatus[] }
+export type ApiQuota = {
+  day: string; resetsAt: number; used: number; limit: number; remaining: number; blocked: boolean; configured: boolean
+}
 export const errors: Record<string, string> = {
   input: '请求参数无效。', configuration: '服务尚未配置 YouTube API 密钥。', credentials: 'YouTube API 密钥无效、受到限制或服务未启用。',
   quota: 'YouTube 今日配额已用完，配额重置后会继续同步。', budget: '应用今日同步预算已用完，将在下一预算周期继续。',

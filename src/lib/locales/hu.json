@@ -1,4 +1,12 @@
 {
+  "youtubeQuota": "YouTube API-kvóta",
+  "quotaUsage": "Ma felhasználva: {used} / {limit} egység",
+  "quotaRemaining": "{count} egység maradt",
+  "quotaReset": "Visszaállítás: {date} (csendes-óceáni idő szerint éjfélkor)",
+  "quotaScope": "A webhely összes felhasználója közösen használja, beleértve a háttérszinkronizálást. Minden külső kérés 1 egységet használ; a gyorsítótár olvasása nem fogyaszt kvótát.",
+  "quotaBudgetHelp": "A korlát a webhely napi kerete, nem a Google Cloud-projekt teljes kvótája. Más alkalmazások hívásai nem szerepelnek benne.",
+  "quotaConsole": "Google Cloud-kvóta megtekintése",
+  "quotaRefresh": "Kvóta frissítése",
   "appTitle": "mytube · Saját könyvtár",
   "appDescription": "A mytube egy személyes könyvtár a kiválasztott videókhoz, csatornákhoz és lejátszási listákhoz.",
   "pageNotFound": "Az oldal nem található",

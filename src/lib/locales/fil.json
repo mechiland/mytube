@@ -1,4 +1,12 @@
 {
+  "youtubeQuota": "Quota ng YouTube API",
+  "quotaUsage": "{used} / {limit} unit ang nagamit ngayong araw",
+  "quotaRemaining": "{count} unit ang natitira",
+  "quotaReset": "Magre-reset: {date} (hatinggabi sa Pacific Time)",
+  "quotaScope": "Pinagsasaluhan ng lahat ng gumagamit ng site, kasama ang pag-sync sa background. Bawat panlabas na request ay gumagamit ng 1 unit; walang quota ang pagbabasa ng cache.",
+  "quotaBudgetHelp": "Ang limitasyon ay ang arawang badyet ng site, hindi ang buong quota ng proyekto sa Google Cloud. Hindi kasama ang mga tawag mula sa ibang app.",
+  "quotaConsole": "Tingnan ang quota sa Google Cloud",
+  "quotaRefresh": "I-refresh ang quota",
   "appTitle": "mytube · Aking Library",
   "appDescription": "Ang mytube ay isang personal na library para sa mga video, channel, at playlist na pipiliin mo.",
   "pageNotFound": "Hindi nahanap ang page",

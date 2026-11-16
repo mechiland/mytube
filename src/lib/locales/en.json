@@ -1,4 +1,12 @@
 {
+  "youtubeQuota": "YouTube API quota",
+  "quotaUsage": "{used} / {limit} units used today",
+  "quotaRemaining": "{count} units remaining",
+  "quotaReset": "Resets {date} (midnight Pacific Time)",
+  "quotaScope": "Shared by all users of this site, including background sync. Each upstream request uses 1 unit; cache reads use none.",
+  "quotaBudgetHelp": "The limit is this site’s daily budget, not the full Google Cloud project quota. Calls from other apps are not included.",
+  "quotaConsole": "View Google Cloud quota",
+  "quotaRefresh": "Refresh quota",
   "appTitle": "mytube · My Library",
   "appDescription": "mytube is a personal library for the videos, channels, and playlists you choose.",
   "pageNotFound": "Page not found",

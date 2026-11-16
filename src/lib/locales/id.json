@@ -1,4 +1,12 @@
 {
+  "youtubeQuota": "Kuota API YouTube",
+  "quotaUsage": "{used} / {limit} unit digunakan hari ini",
+  "quotaRemaining": "{count} unit tersisa",
+  "quotaReset": "Direset: {date} (tengah malam Waktu Pasifik)",
+  "quotaScope": "Dibagikan ke semua pengguna situs, termasuk sinkronisasi latar belakang. Setiap permintaan eksternal memakai 1 unit; pembacaan cache tidak memakai kuota.",
+  "quotaBudgetHelp": "Batas ini adalah anggaran harian situs, bukan seluruh kuota proyek Google Cloud. Panggilan dari aplikasi lain tidak termasuk.",
+  "quotaConsole": "Lihat kuota Google Cloud",
+  "quotaRefresh": "Segarkan kuota",
   "appTitle": "mytube · Koleksi saya",
   "appDescription": "mytube adalah perpustakaan pribadi untuk video, saluran, dan daftar putar yang Anda pilih.",
   "pageNotFound": "Halaman tidak ditemukan",

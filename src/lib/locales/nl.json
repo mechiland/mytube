@@ -1,4 +1,12 @@
 {
+  "youtubeQuota": "YouTube API-quotum",
+  "quotaUsage": "Vandaag {used} / {limit} eenheden gebruikt",
+  "quotaRemaining": "{count} eenheden over",
+  "quotaReset": "Reset: {date} (middernacht, Pacific-tijd)",
+  "quotaScope": "Gedeeld door alle gebruikers van de site, inclusief synchronisatie op de achtergrond. Elk extern verzoek kost 1 eenheid; lezen uit de cache kost geen quotum.",
+  "quotaBudgetHelp": "De limiet is het dagbudget van deze site, niet het volledige quotum van het Google Cloud-project. Aanroepen van andere apps zijn niet inbegrepen.",
+  "quotaConsole": "Google Cloud-quotum bekijken",
+  "quotaRefresh": "Quotum vernieuwen",
   "appTitle": "mytube · Mijn bibliotheek",
   "appDescription": "mytube is een persoonlijke bibliotheek voor de video's, kanalen en afspeellijsten die je kiest.",
   "pageNotFound": "Pagina niet gevonden",

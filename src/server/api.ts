@@ -1,7 +1,7 @@
 import type { Source, SourceKind, Video } from '../lib/data'
 import { MAX_FAVORITES, MAX_PERSONAL, MAX_SOURCES } from '../lib/library'
 import { channelId, handle, parseYouTube, playlistId, videoId } from '../lib/youtube-url'
-import { ApiError, fail, life, nowMs, readCache, stmt, writeCache, type Bindings } from './db'
+import { ApiError, fail, life, nowMs, readCache, readQuota, stmt, writeCache, type Bindings } from './db'
 import { feed, firstPlayable, playlistPage, queueWindow, statuses, touchSources, type FeedInput } from './queries'
 import { enroll, refreshSource, runSource, storeSource, storeVideos } from './sync'
 import { getChannel, getChannelPlaylists, getComments, getPlaylist, getVideos } from './youtube'
@@ -146,6 +146,7 @@ export async function handleApi(request: Request, name: string | undefined, bind
       fail('missing', 404)
     }
     switch (name) {
+      case 'quota': return json(await readQuota(env))
       case 'resolve': {
         const raw = q.get('url')
         if (!raw) fail('input')

@@ -1,4 +1,12 @@
 {
+  "youtubeQuota": "Kikomo cha YouTube API",
+  "quotaUsage": "Vizio {used} / {limit} vimetumika leo",
+  "quotaRemaining": "Vizio {count} vimebaki",
+  "quotaReset": "Kuweka upya: {date} (saa sita usiku kwa saa za Pasifiki)",
+  "quotaScope": "Hushirikiwa na watumiaji wote wa tovuti, pamoja na usawazishaji wa chinichini. Kila ombi la nje hutumia kizio 1; kusoma akiba hakutumii kikomo.",
+  "quotaBudgetHelp": "Kikomo ni bajeti ya kila siku ya tovuti, si kikomo kamili cha mradi wa Google Cloud. Miito kutoka programu nyingine haijajumuishwa.",
+  "quotaConsole": "Angalia kikomo cha Google Cloud",
+  "quotaRefresh": "Onyesha upya kikomo",
   "appTitle": "mytube · Maktaba Yangu",
   "appDescription": "mytube ni maktaba ya kibinafsi ya video, vituo na orodha za kucheza unazochagua.",
   "pageNotFound": "Ukurasa haujapatikana",

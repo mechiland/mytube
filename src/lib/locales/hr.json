@@ -1,4 +1,12 @@
 {
+  "youtubeQuota": "Kvota YouTube API-ja",
+  "quotaUsage": "Danas iskorišteno {used} / {limit} jedinica",
+  "quotaRemaining": "Preostalo {count} jedinica",
+  "quotaReset": "Ponovno postavljanje: {date} (ponoć po pacifičkom vremenu)",
+  "quotaScope": "Dijele je svi korisnici web-mjesta, uključujući sinkronizaciju u pozadini. Svaki vanjski zahtjev troši 1 jedinicu; čitanje iz predmemorije ne troši kvotu.",
+  "quotaBudgetHelp": "Ograničenje je dnevni proračun web-mjesta, a ne puna kvota projekta Google Cloud. Pozivi iz drugih aplikacija nisu uključeni.",
+  "quotaConsole": "Prikaži kvotu Google Cloud",
+  "quotaRefresh": "Osvježi kvotu",
   "appTitle": "mytube · Moja knjižnica",
   "appDescription": "mytube je osobna biblioteka za videozapise, kanale i popise za reprodukciju koje odaberete.",
   "pageNotFound": "Stranica nije pronađena",

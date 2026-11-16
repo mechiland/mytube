@@ -1,4 +1,12 @@
 {
+  "youtubeQuota": "YouTube-API-Kontingent",
+  "quotaUsage": "Heute {used} / {limit} Einheiten verbraucht",
+  "quotaRemaining": "{count} Einheiten verbleibend",
+  "quotaReset": "Zurücksetzung: {date} (Mitternacht, Pazifikzeit)",
+  "quotaScope": "Alle Nutzer dieser Website teilen sich das Kontingent, einschließlich der Hintergrundsynchronisierung. Jede externe Anfrage kostet 1 Einheit; Cache-Zugriffe kosten keine.",
+  "quotaBudgetHelp": "Das Limit ist das Tagesbudget dieser Website, nicht das gesamte Kontingent des Google-Cloud-Projekts. Aufrufe anderer Apps sind nicht enthalten.",
+  "quotaConsole": "Google-Cloud-Kontingent ansehen",
+  "quotaRefresh": "Kontingent aktualisieren",
   "appTitle": "mytube · Meine Bibliothek",
   "appDescription": "mytube ist eine persönliche Bibliothek für die von Ihnen ausgewählten Videos, Kanäle und Wiedergabelisten.",
   "pageNotFound": "Seite nicht gefunden",

@@ -1,4 +1,12 @@
 {
+  "youtubeQuota": "מכסת YouTube API",
+  "quotaUsage": "נוצלו היום {used} / {limit} יחידות",
+  "quotaRemaining": "נותרו {count} יחידות",
+  "quotaReset": "איפוס: {date} (חצות לפי שעון האוקיינוס השקט)",
+  "quotaScope": "משותפת לכל משתמשי האתר, כולל סנכרון ברקע. כל בקשה חיצונית צורכת יחידה אחת; קריאה מהמטמון אינה צורכת מכסה.",
+  "quotaBudgetHelp": "המגבלה היא התקציב היומי של האתר, ולא המכסה המלאה של פרויקט Google Cloud. קריאות מאפליקציות אחרות אינן נכללות.",
+  "quotaConsole": "הצגת המכסה ב-Google Cloud",
+  "quotaRefresh": "רענון המכסה",
   "appTitle": "mytube · הספרייה שלי",
   "appDescription": "mytube היא ספרייה אישית עבור הסרטונים, הערוצים והפלייליסטים שתבחרו.",
   "pageNotFound": "הדף לא נמצא",

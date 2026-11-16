@@ -1,4 +1,12 @@
 {
+  "youtubeQuota": "YouTube API の割り当て",
+  "quotaUsage": "本日の使用量 {used} / {limit} 単位",
+  "quotaRemaining": "残り {count} 単位",
+  "quotaReset": "リセット日時：{date}（太平洋時間の午前0時）",
+  "quotaScope": "バックグラウンド同期を含め、このサイトの全ユーザーで共有します。上流へのリクエストは1回につき1単位を消費し、キャッシュの読み取りは消費しません。",
+  "quotaBudgetHelp": "上限はこのサイトの1日の予算であり、Google Cloud プロジェクト全体の割り当てではありません。他のアプリからの呼び出しは含みません。",
+  "quotaConsole": "Google Cloud の割り当てを表示",
+  "quotaRefresh": "割り当てを更新",
   "appTitle": "mytube · マイライブラリ",
   "appDescription": "mytube は、選択したビデオ、チャンネル、プレイリストの個人ライブラリです。",
   "pageNotFound": "ページが見つかりません",
