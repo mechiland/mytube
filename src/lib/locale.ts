@@ -48,6 +48,20 @@ export const languages = {
 
 export type Locale = keyof typeof languages
 export type LanguagePreference = Locale | 'browser'
+export const languageStorageKey = 'mytube-language'
+export const localeDirection = (locale: Locale) => ['ar', 'fa', 'he', 'ur'].includes(locale) ? 'rtl' as const : 'ltr' as const
+
+export function requestLocale(cookie: string | null, acceptLanguage: string | null) {
+  const saved = cookie?.split(';').map(part => part.trim()).find(part => part.startsWith(`${languageStorageKey}=`))?.slice(languageStorageKey.length + 1)
+  const preference: LanguagePreference = isLocale(saved) ? saved : 'browser'
+  const tags = (acceptLanguage ?? '').split(',').map((part, index) => {
+    const [tag, ...parameters] = part.trim().split(';')
+    const quality = parameters.find(value => value.trim().startsWith('q='))?.trim().slice(2)
+    return { tag, index, quality: quality === undefined ? 1 : Number(quality) }
+  }).filter(value => value.quality > 0 && value.quality <= 1)
+    .sort((a, b) => b.quality - a.quality || a.index - b.index).map(value => value.tag)
+  return { preference, locale: preference === 'browser' ? browserLocale(tags) : preference }
+}
 
 export function isLocale(value: unknown): value is Locale {
   return typeof value === 'string' && Object.hasOwn(languages, value)

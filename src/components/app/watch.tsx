@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from '@tanstack/react-router'
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { Bookmark, Check, ChevronLeft, ChevronRight, ExternalLink, ListVideo, RectangleHorizontal, Share2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
@@ -24,11 +24,11 @@ export function WatchPage({ search }: { search: Search }) {
   const query = useQuery(videoQuery(search.v))
   if (!search.v) return <section className="page"><Notice title={t('invalidVideo')} /></section>
   if (query.isPending) return <section className="page watch-placeholder"><Loading label={t('loadingVideo')} /></section>
-  if (!query.data || query.error) return <section className="page"><Notice title={t('videoOpenFailed')} error={query.error} retry={() => void query.refetch()} />
+  if (!query.data) return <section className="page"><Notice title={t('videoOpenFailed')} error={query.error} retry={() => void query.refetch()} />
     <a href={`https://www.youtube.com/watch?v=${search.v}`} target="_blank" rel="noopener">{t('openOnYouTube')}</a></section>
-  return <WatchContent search={search} video={query.data} />
+  return <WatchContent search={search} video={query.data} notice={query.error && <Notice error={query.error} retry={() => void query.refetch()} />} />
 }
-function WatchContent({ search, video }: { search: Search; video: Video }) {
+function WatchContent({ search, video, notice }: { search: Search; video: Video; notice?: ReactNode }) {
   const { list, index, t: timestamp } = search
   const navigate = useNavigate()
   const playToken = useLocation({ select: location => location.state.playAll })
@@ -78,6 +78,7 @@ function WatchContent({ search, video }: { search: Search; video: Video }) {
         onProgress={p => { void update(s => recordProgress(s, video.id, p)) }} onEnded={() => { if (continuous) jump(nextItem, true) }} />
     </div>
     <div className="watch-info">
+      {notice}
       <h1>{video.title}</h1>
       <div className="watch-actions">
         <ChannelLink id={video.channelId} className="watch-author"><ChannelAvatar name={video.channelTitle} url={author.data?.data.thumbnail} /><strong>{video.channelTitle}</strong></ChannelLink>

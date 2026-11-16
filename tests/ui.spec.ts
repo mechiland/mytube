@@ -11,7 +11,7 @@ const listId = 'PLtestplaylist'
 const thumbnail = 'https://i.ytimg.com/vi/aaaaaaaaaaa/hqdefault.jpg'
 const a: Video = { kind: 'video', id: 'aaaaaaaaaaa', title: '已选频道视频', thumbnail, description: '示例描述', published: '2025-01-01T12:00:00Z',
   channelId, channelTitle: '频道 A', duration: 100, embeddable: true }
-const b: Video = { ...a, id: 'bbbbbbbbbbb', title: '跨频道列表成员', channelId: otherId, channelTitle: '频道 B' }
+const b: Video = { ...a, id: 'bbbbbbbbbbb', title: '跨频道列表成员', channelId: otherId, channelTitle: '频道 B', published: '2024-12-31T12:00:00Z' }
 const channel: Channel = { kind: 'channel', id: channelId, title: '频道 A', thumbnail: '', description: '频道简介', uploads: 'UU' + 'a'.repeat(22) }
 const list: Playlist = { kind: 'playlist', id: listId, title: '例子播放列表', thumbnail: '', description: '列表简介', count: 4, channelId, channelTitle: '频道 A' }
 const channelLists = [list, ...['第二个列表', '第三个列表', '第四个列表'].map((title, i) => ({ ...list, title, id: `${listId}${i}` }))]
@@ -226,6 +226,95 @@ test('library pages show a compact title without introductory copy', async ({ pa
   }
   await page.setViewportSize({ width: 390, height: 844 })
   await expect(page.getByRole('heading', { level: 1 })).toHaveCSS('font-size', '22px')
+})
+
+test('keeps source IDs out of filters while metadata is loading', async ({ page }) => {
+  await mockData(page)
+  let release!: () => void
+  const pending = new Promise<void>(resolve => { release = resolve })
+  await page.route('**/api/source?**', async route => {
+    await pending
+    await route.fulfill({ json: { data: channel } })
+  })
+  try {
+    await page.goto('/settings')
+    await page.getByLabel('选择备份文件').setInputFiles({ name: 'library.json', mimeType: 'application/json',
+      buffer: Buffer.from(JSON.stringify({ ...emptyLibrary(), channels: [channelId] })) })
+    await page.getByRole('button', { name: '确认合并' }).click()
+    await page.getByRole('link', { name: 'mytube 首页' }).click()
+    await expect(page.getByRole('combobox', { name: '排序' })).toBeVisible()
+    await expect(page.locator('.chips')).not.toContainText(channelId)
+    await expect(page.locator('.chips [data-slot="skeleton"]')).toBeVisible()
+    release()
+    await expect(page.locator('.chips').getByRole('button', { name: channel.title })).toBeVisible()
+  } finally { release() }
+})
+
+test('restores library metadata locally and reuses feed videos on the watch page', async ({ page }) => {
+  await mockData(page)
+  await page.goto('/settings')
+  await page.getByLabel('选择备份文件').setInputFiles({ name: 'library.json', mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify({ ...emptyLibrary(), channels: [channelId], playlists: [listId] })) })
+  await page.getByRole('button', { name: '确认合并' }).click()
+  await page.getByRole('link', { name: 'mytube 首页' }).click()
+  await expect(page.locator('.video-title').first()).toHaveText(a.title)
+  await expect(page.locator('.chips').getByRole('button', { name: channel.title })).toBeVisible()
+  await expect(page.locator('.chips').getByRole('button', { name: list.title })).toBeVisible()
+  await page.getByRole('navigation', { name: '内容库导航' }).getByRole('link', { name: '播放列表', exact: true }).click()
+  await page.getByRole('heading', { name: list.title, exact: true }).click()
+  await expect(page.locator('.playlist-items li')).toHaveCount(4)
+  await page.getByRole('link', { name: 'mytube 首页' }).click()
+  await expect(page.locator('.video-title').first()).toHaveText(a.title)
+
+  const metadataRequests: string[] = []
+  await page.route('**/api/**', route => {
+    const path = new URL(route.request().url()).pathname
+    if (!route.request().headers()['x-mytube-background'] && ['/api/source', '/api/video', '/api/feed', '/api/playlist'].includes(path)) metadataRequests.push(path)
+    return route.abort('internetdisconnected')
+  })
+  await page.reload()
+  await expect(page.locator('.video-title').first()).toHaveText(a.title)
+  await expect(page.locator('.chips').getByRole('button', { name: channel.title })).toBeVisible()
+  await expect(page.locator('.chips').getByRole('button', { name: list.title })).toBeVisible()
+  await page.locator('.video-title').first().click()
+  await expect(page.getByRole('heading', { name: a.title, exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: '播放视频', exact: true })).toBeVisible()
+  await page.getByRole('navigation', { name: '内容库导航' }).getByRole('link', { name: '播放列表', exact: true }).click()
+  await page.getByRole('heading', { name: list.title, exact: true }).click()
+  await expect(page.locator('.playlist-items li')).toHaveCount(4)
+  expect(metadataRequests).toEqual([])
+
+  // Age the browser cache without delaying the suite; failed revalidation must keep its data.
+  await page.addInitScript(() => {
+    const now = Date.now
+    Date.now = () => now() + 15 * 60_000
+  })
+  await page.route('**/api/**', route => route.fulfill({ status: 503, json: { error: 'configuration' } }))
+  await page.reload()
+  await expect(page.getByRole('alert').first()).toBeVisible()
+  await expect(page.getByRole('heading', { name: list.title, exact: true })).toBeVisible()
+  await expect(page.locator('.playlist-items li')).toHaveCount(4)
+  await page.locator('.playlist-item-link').first().click()
+  await expect(page.getByRole('heading', { name: a.title, exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: '播放视频', exact: true })).toBeVisible()
+})
+
+test('keeps a newly saved video visible using its locally resolved metadata', async ({ page }) => {
+  await mockData(page)
+  await page.route('**/api/resolve?**', route => route.fulfill({ json: { target: { kind: 'video', id: a.id }, value: a } }))
+  await page.goto('/settings')
+  await page.getByRole('button', { name: '添加内容', exact: true }).click()
+  const dialog = page.getByRole('dialog')
+  await dialog.getByLabel('YouTube 链接').fill(`https://youtu.be/${a.id}`)
+  await dialog.getByRole('button', { name: '解析链接' }).click()
+  await expect(dialog.getByText(a.title, { exact: true })).toBeVisible()
+  await page.route('**/api/feed?**', route => route.fulfill({ status: 503, json: { error: 'configuration' } }))
+  await page.route('**/api/video?**', route => route.fulfill({ status: 503, json: { error: 'configuration' } }))
+  await dialog.getByRole('button', { name: '只保存此视频' }).click()
+  await page.getByRole('navigation', { name: '内容库导航' }).getByRole('link', { name: '收藏', exact: true }).click()
+  await expect(page.locator('.video-title')).toHaveText(a.title)
+  await page.reload()
+  await expect(page.locator('.video-title')).toHaveText(a.title)
 })
 
 test('watch poster fills the player before playback', async ({ page }) => {

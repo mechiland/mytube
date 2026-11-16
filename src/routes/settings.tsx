@@ -47,7 +47,6 @@ function Settings() {
   }
   return <section className="page settings-page">
     <header className="page-heading"><h1>{t('settings')}</h1></header>
-    {!ready ? <Loading /> : <>
       <section className="settings-section"><h2>{t('appearancePlayback')}</h2>
         <div className="settings-row"><label htmlFor="language">{t('language')}</label>
           <NativeSelect id="language" value={preference} onChange={e => {
@@ -59,12 +58,13 @@ function Settings() {
               <NativeSelectOption key={locale} lang={locale} value={locale}>{name}</NativeSelectOption>)}
           </NativeSelect>
         </div>
-        <div className="settings-row"><label htmlFor="theme">{t('theme')}</label><NativeSelect id="theme" value={state.theme} onChange={e => {
+        <div className="settings-row"><label htmlFor="theme">{t('theme')}</label><NativeSelect id="theme" disabled={!ready} value={state.theme} onChange={e => {
           const theme = e.target.value as Library['theme']
           void update(s => ({ ...s, theme }))
         }}><NativeSelectOption value="system">{t('systemTheme')}</NativeSelectOption><NativeSelectOption value="light">{t('lightTheme')}</NativeSelectOption><NativeSelectOption value="dark">{t('darkTheme')}</NativeSelectOption></NativeSelect></div>
-        <label className="settings-row"><span>{t('loopPlayback')}</span><Switch checked={state.loop} onCheckedChange={loop => void update(s => ({ ...s, loop }))} /></label>
+        <label className="settings-row"><span>{t('loopPlayback')}</span><Switch disabled={!ready} checked={state.loop} onCheckedChange={loop => void update(s => ({ ...s, loop }))} /></label>
       </section>
+    {!ready ? <Loading /> : <>
       <section className="settings-section"><h2>{t('hiddenVideos')}</h2>
         {!state.hidden.length ? <p className="muted">{t('noHiddenVideos')}</p> : <>
           {state.hidden.slice(0, 30).map(id => <div className="settings-row" key={id}>

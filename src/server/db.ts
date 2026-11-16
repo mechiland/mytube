@@ -1,7 +1,7 @@
 import { errors } from '../lib/data'
 
 export interface Bindings {
-  DB: D1Database
+  DB: D1Database | D1DatabaseSession
   limitLookup?: () => Promise<void>
   YOUTUBE_API_KEY?: string
   SYNC_INTERVAL_SECONDS?: string
