@@ -190,6 +190,8 @@
   "lightTheme": "Jasny",
   "darkTheme": "Ciemny",
   "loopPlayback": "Ciągłe odtwarzanie w pętli na końcu listy odtwarzania",
+  "videoFrames": "Pokazuj klatki wideo zamiast miniatur",
+  "videoFramesHelp": "Pokazuje klatkę ze środka każdego filmu, ograniczając rozpraszające lub mylące miniatury. Wyłącz, aby przywrócić oryginalne miniatury.",
   "hiddenVideos": "Ukryte filmy",
   "noHiddenVideos": "Żadnych ukrytych filmów.",
   "videoRestored": "Przywrócono wideo",

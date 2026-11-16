@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { api, formatDuration, safeImage, sourceQuery } from '@/lib/client'
-import type { Source, SourceKind, SyncStatus } from '@/lib/data'
+import type { Source, SourceKind, SyncStatus, Video } from '@/lib/data'
 import { saveSource, useLibrary } from '@/lib/personal'
 import { useLocale } from '@/lib/i18n'
 
@@ -29,9 +29,14 @@ export function Cover({ url, duration, eager }: { url: string; duration?: number
   const src = safeImage(url)
   return <div className="cover">
     <ImageOff className="cover-fallback" aria-hidden="true" />
-    {src && <img src={src} alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" onError={e => { e.currentTarget.hidden = true }} />}
+    {src && <img key={src} src={src} alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" onError={e => { e.currentTarget.hidden = true }} />}
     {!!duration && <span className="duration">{formatDuration(duration)}</span>}
   </div>
+}
+export function VideoCover({ video, duration, eager }: { video: Pick<Video, 'id' | 'thumbnail'>; duration?: number; eager?: boolean }) {
+  const { state } = useLibrary()
+  const url = state.videoFrames ? `https://i.ytimg.com/vi/${video.id}/hq2.jpg` : video.thumbnail
+  return <Cover url={url} duration={duration} eager={eager} />
 }
 export function ChannelAvatar({ name, url, className }: { name: string; url?: string; className?: string }) {
   return <Avatar className={className ? `app-avatar ${className}` : "app-avatar"}>{safeImage(url) && <AvatarImage src={safeImage(url)} alt="" />}

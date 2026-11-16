@@ -190,6 +190,8 @@
   "lightTheme": "Claro",
   "darkTheme": "Oscuro",
   "loopPlayback": "Reproducción continua en bucle al final de una lista de reproducción",
+  "videoFrames": "Mostrar fotogramas en lugar de miniaturas",
+  "videoFramesHelp": "Muestra un fotograma de la mitad de cada vídeo para reducir las miniaturas que distraen o engañan. Desactiva esta opción para ver las miniaturas originales.",
   "hiddenVideos": "Vídeos ocultos",
   "noHiddenVideos": "Sin vídeos ocultos.",
   "videoRestored": "Vídeo restaurado",

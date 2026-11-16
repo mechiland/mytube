@@ -190,6 +190,8 @@
   "lightTheme": "Light",
   "darkTheme": "Dark",
   "loopPlayback": "Loop continuous playback at the end of a playlist",
+  "videoFrames": "Show video frames instead of thumbnails",
+  "videoFramesHelp": "Show a frame from the middle of each video to reduce distracting or misleading thumbnails. Turn this off to restore original thumbnails.",
   "hiddenVideos": "Hidden videos",
   "noHiddenVideos": "No hidden videos.",
   "videoRestored": "Video restored",

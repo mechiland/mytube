@@ -190,6 +190,8 @@
   "lightTheme": "Lyst",
   "darkTheme": "Mørkt",
   "loopPlayback": "Loop kontinuerlig afspilning i slutningen af en afspilningsliste",
+  "videoFrames": "Vis videobilleder i stedet for miniaturebilleder",
+  "videoFramesHelp": "Vis et billede fra midten af hver video for at mindske distraherende eller vildledende miniaturebilleder. Slå fra for at vise de oprindelige miniaturebilleder.",
   "hiddenVideos": "Skjulte videoer",
   "noHiddenVideos": "Ingen skjulte videoer.",
   "videoRestored": "Video gendannet",

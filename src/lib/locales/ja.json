@@ -190,6 +190,8 @@
   "lightTheme": "ライト",
   "darkTheme": "ダーク",
   "loopPlayback": "プレイリストの最後でループ連続再生",
+  "videoFrames": "サムネイルの代わりに動画のフレームを表示",
+  "videoFramesHelp": "各動画の中盤の映像を表示し、誇張されたサムネイルに惑わされにくくします。オフにすると元のサムネイルに戻ります。",
   "hiddenVideos": "隠しビデオ",
   "noHiddenVideos": "隠しビデオはありません。",
   "videoRestored": "ビデオが復元されました",

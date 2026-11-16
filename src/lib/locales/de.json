@@ -190,6 +190,8 @@
   "lightTheme": "Hell",
   "darkTheme": "Dunkel",
   "loopPlayback": "Endlose Endloswiedergabe am Ende einer Playlist",
+  "videoFrames": "Videobilder statt Vorschaubilder anzeigen",
+  "videoFramesHelp": "Zeigt ein Bild aus der Mitte jedes Videos, um ablenkende oder irreführende Vorschaubilder zu vermeiden. Ausschalten, um die ursprünglichen Vorschaubilder anzuzeigen.",
   "hiddenVideos": "Versteckte Videos",
   "noHiddenVideos": "Keine versteckten Videos.",
   "videoRestored": "Video wiederhergestellt",

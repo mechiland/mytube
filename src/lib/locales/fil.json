@@ -190,6 +190,8 @@
   "lightTheme": "Maliwanag",
   "darkTheme": "Madilim",
   "loopPlayback": "I-loop ang tuluy-tuloy na pag-playback sa dulo ng isang playlist",
+  "videoFrames": "Ipakita ang mga frame ng video sa halip na mga thumbnail",
+  "videoFramesHelp": "Magpakita ng frame mula sa gitna ng bawat video upang mabawasan ang mga thumbnail na nakakaabala o mapanlinlang. I-off ito upang ibalik ang mga orihinal na thumbnail.",
   "hiddenVideos": "Mga nakatagong video",
   "noHiddenVideos": "Walang mga nakatagong video.",
   "videoRestored": "Na-restore ang video",

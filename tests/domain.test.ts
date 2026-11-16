@@ -28,6 +28,20 @@ describe('YouTube input', () => {
 })
 
 describe('mytube backup', () => {
+  it('enables video frames for new libraries and older backups', () => {
+    expect(emptyLibrary()).toMatchObject({ videoFrames: true })
+    const legacy = { ...emptyLibrary() } as Record<string, unknown>
+    delete legacy.videoFrames
+    expect(parseBackup(JSON.stringify(legacy))).toMatchObject({ videoFrames: true })
+  })
+  it('preserves a disabled video frame preference through backup parsing and merging', () => {
+    const local = parseBackup(JSON.stringify({ ...emptyLibrary(), videoFrames: false }))
+    expect(local).toMatchObject({ videoFrames: false })
+    expect(mergeLibrary(local, emptyLibrary())).toMatchObject({ videoFrames: false })
+  })
+  it.each([null, 'false', 0])('rejects an invalid video frame preference: %s', videoFrames => {
+    expect(() => parseBackup(JSON.stringify({ ...emptyLibrary(), videoFrames }))).toThrow()
+  })
   it('deduplicates ids and preserves the latest recorded progress', () => {
     const local = emptyLibrary()
     local.progress.dQw4w9WgXcQ = { at: 20, updatedAt: 200, duration: 200 }

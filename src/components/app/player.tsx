@@ -8,7 +8,7 @@ import { playerApi } from '@/lib/playback'
 import { useLocale } from '@/lib/i18n'
 import type { Locale } from '@/lib/locale'
 import type { MessageKey } from '@/lib/message-error'
-import { Cover } from './common'
+import { VideoCover } from './common'
 
 type Start = { at: number; requested: number; locale: Locale }
 export function Player({ video, resume, time, auto, onProgress, onEnded, external }: {
@@ -109,7 +109,7 @@ export function Player({ video, resume, time, auto, onProgress, onEnded, externa
   return <>
     <div className="player" role="region" aria-label={t('videoPlayer')}>
       {start ? <div ref={host} className="player-host" /> : <>
-        <Cover url={video.thumbnail} eager />
+        <VideoCover video={video} eager />
         {video.embeddable && <Button className="play-button" size="icon-lg" aria-label={t('playVideo')} onClick={() => play(initial)}><Play fill="currentColor" /></Button>}
       </>}
     </div>

@@ -23,7 +23,7 @@ const items: Item[] = [
 ]
 const comment = { id: 'comment-one', author: '公开作者', text: '<script>window.bad=true</script>\n第二行', likes: 12, published: a.published, replies: 24 }
 async function mockData(page: Page, statuses: SyncStatus[] = []) {
-  await page.route(thumbnail, route => route.fulfill({
+  await page.route('https://i.ytimg.com/vi/*/*.jpg', route => route.fulfill({
     contentType: 'image/svg+xml',
     body: '<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360"><rect width="480" height="360" fill="black"/><rect y="45" width="480" height="270" fill="white"/></svg>',
   }))
@@ -84,6 +84,80 @@ async function importSearchLibrary(page: Page, overrides: Partial<ReturnType<typ
   await expect(page.getByRole('dialog')).toBeHidden()
   await page.getByRole('link', { name: 'mytube 首页' }).click()
 }
+
+test('video frames are enabled by default and the choice survives reloads', async ({ page }) => {
+  await importSearchLibrary(page)
+  const cover = page.locator('.cover-link img').first()
+  await expect(cover).toHaveAttribute('src', `https://i.ytimg.com/vi/${a.id}/hq2.jpg`)
+  await expect(cover).toBeVisible()
+  await expect(page.locator('.cover-link .duration').first()).toHaveText('1:40')
+  await page.goto('/settings')
+  const toggle = page.getByRole('switch', { name: '用视频画面替代封面', exact: true })
+  await expect(toggle).toBeChecked()
+  await expect(toggle).toHaveAccessibleDescription(/关闭后恢复原始封面/)
+  await toggle.click()
+  await expect(toggle).not.toBeChecked()
+  await page.reload()
+  await expect(toggle).not.toBeChecked()
+  await page.getByRole('link', { name: 'mytube 首页' }).click()
+  await expect(cover).toHaveAttribute('src', thumbnail)
+  await expect(cover).toBeVisible()
+})
+
+test('video frame preference applies to video previews, search, playlists, the queue and player posters', async ({ page }) => {
+  await importSearchLibrary(page)
+  await page.route('**/api/resolve?**', route => route.fulfill({ json: { target: { kind: 'video', id: a.id }, value: a } }))
+  for (const frames of [true, false]) {
+    if (!frames) {
+      await page.goto('/settings')
+      const toggle = page.getByRole('switch', { name: '用视频画面替代封面', exact: true })
+      await toggle.click()
+      await expect(toggle).not.toBeChecked()
+      await page.getByRole('link', { name: 'mytube 首页' }).click()
+    }
+    const src = (id: string) => frames ? `https://i.ytimg.com/vi/${id}/hq2.jpg` : thumbnail
+    await page.getByRole('button', { name: '添加内容', exact: true }).click()
+    const preview = page.getByRole('dialog')
+    await preview.getByLabel('YouTube 链接').fill(`https://youtu.be/${a.id}`)
+    await preview.getByRole('button', { name: '解析链接' }).click()
+    await expect(preview.locator('.cover img')).toHaveAttribute('src', src(a.id))
+    await page.keyboard.press('Escape')
+    await page.keyboard.press('Control+k')
+    const search = page.getByRole('dialog', { name: '搜索我的内容库' })
+    await search.getByRole('combobox').fill('已选')
+    await expect(search.locator('.cover img')).toHaveAttribute('src', src(a.id))
+    await page.keyboard.press('Escape')
+    await page.goto(`/playlist?list=${listId}`)
+    const covers = page.locator('.playlist-items .cover img')
+    await expect(covers).toHaveCount(3)
+    await expect(covers.nth(0)).toHaveAttribute('src', src(a.id))
+    await expect(covers.nth(1)).toHaveAttribute('src', src(b.id))
+    await page.goto(`/watch?v=${a.id}&list=${listId}&index=1`)
+    await expect(page.getByRole('region', { name: '视频播放器' }).locator('img')).toHaveAttribute('src', src(a.id))
+    await expect(page.locator('.queue-current .cover img')).toHaveAttribute('src', src(a.id))
+  }
+})
+
+test('a missing video frame stays a placeholder and switching modes restores the image in another tab', async ({ page, context }) => {
+  await importSearchLibrary(page)
+  await page.route('https://i.ytimg.com/vi/*/hq2.jpg', route => route.fulfill({ status: 404, body: '' }))
+  await page.reload()
+  const cover = page.locator('.cover-link img').first()
+  await expect(cover).toBeHidden()
+  await expect(page.locator('.cover-link .cover-fallback').first()).toBeVisible()
+  const settings = await context.newPage()
+  await settings.goto('/settings')
+  const toggle = settings.getByRole('switch', { name: '用视频画面替代封面', exact: true })
+  await toggle.click()
+  await expect(toggle).not.toBeChecked()
+  await expect(cover).toHaveAttribute('src', thumbnail)
+  await expect(cover).toBeVisible()
+  await toggle.click()
+  await expect(toggle).toBeChecked()
+  await expect(cover).toHaveAttribute('src', `https://i.ytimg.com/vi/${a.id}/hq2.jpg`)
+  await expect(cover).toBeHidden()
+  await settings.close()
+})
 
 test('search opens with either shortcut or the header and returns focus on desktop and mobile', async ({ page }) => {
   await page.goto('/')

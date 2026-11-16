@@ -11,7 +11,7 @@ import { saveFavorite, saveSource, useLibrary } from '@/lib/personal'
 import { parseYouTube, type Target } from '@/lib/youtube-url'
 import { useLocale } from '@/lib/i18n'
 import { cacheMetadata } from '@/lib/query-cache'
-import { ChannelAvatar, Cover, Notice } from './common'
+import { ChannelAvatar, Cover, Notice, VideoCover } from './common'
 
 type Preview = { target: Target; value: Source | Video }
 export default function AddDialog({ open, setOpen }: { open: boolean; setOpen: (v: boolean) => void }) {
@@ -66,7 +66,8 @@ export default function AddDialog({ open, setOpen }: { open: boolean; setOpen: (
     </form>
     {(validation || lookup.error) && <Notice title={t('addFailed')} error={validation ?? lookup.error} retry={lookup.error ? () => lookup.mutate(url.trim(), { onSuccess: setPreview }) : undefined} />}
     {preview && <div className="add-preview">
-      {preview.value.kind === 'channel' ? <ChannelAvatar name={preview.value.title} url={preview.value.thumbnail} className="preview-avatar" /> : <Cover url={preview.value.thumbnail} />}
+      {preview.value.kind === 'channel' ? <ChannelAvatar name={preview.value.title} url={preview.value.thumbnail} className="preview-avatar" />
+        : preview.value.kind === 'video' ? <VideoCover video={preview.value} /> : <Cover url={preview.value.thumbnail} />}
       <div><div className="muted">{preview.value.kind === 'channel' ? t('channel') : preview.value.kind === 'playlist' ? t('publicPlaylist') : t('singleVideo')}</div><strong>{preview.value.title}</strong></div>
     </div>}
     {preview && <DialogFooter>

@@ -190,6 +190,8 @@
   "lightTheme": "Vaalea",
   "darkTheme": "Tumma",
   "loopPlayback": "Jatkuva toisto soittolistan lopussa",
+  "videoFrames": "Näytä videon ruutuja pikkukuvien sijaan",
+  "videoFramesHelp": "Näyttää ruudun kunkin videon keskeltä häiritsevien tai harhaanjohtavien pikkukuvien sijaan. Poista käytöstä palauttaaksesi alkuperäiset pikkukuvat.",
   "hiddenVideos": "Piilotetut videot",
   "noHiddenVideos": "Ei piilotettuja videoita.",
   "videoRestored": "Video palautettu",

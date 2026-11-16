@@ -17,9 +17,10 @@ export type Library = {
   contexts: Record<string, WatchContext>
   theme: 'system' | 'light' | 'dark'
   loop: boolean
+  videoFrames: boolean
 }
 export const emptyLibrary = (): Library => ({
-  schemaVersion: 1, channels: [], playlists: [], favorites: [], hidden: [], progress: {}, contexts: {}, theme: 'system', loop: false,
+  schemaVersion: 1, channels: [], playlists: [], favorites: [], hidden: [], progress: {}, contexts: {}, theme: 'system', loop: false, videoFrames: true,
 })
 const isObject = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v)
 const unique = (items: string[]) => Array.from(new Set(items))
@@ -55,7 +56,8 @@ export function validateLibrary(raw: unknown): Library {
   }
   if (raw.theme !== 'light' && raw.theme !== 'dark' && raw.theme !== 'system') throw invalid()
   if (typeof raw.loop !== 'boolean') throw invalid()
-  return { schemaVersion: 1, channels, playlists, favorites, hidden: list('hidden', videoId, MAX_PERSONAL), progress, contexts, theme: raw.theme, loop: raw.loop }
+  if (raw.videoFrames !== undefined && typeof raw.videoFrames !== 'boolean') throw invalid()
+  return { schemaVersion: 1, channels, playlists, favorites, hidden: list('hidden', videoId, MAX_PERSONAL), progress, contexts, theme: raw.theme, loop: raw.loop, videoFrames: raw.videoFrames ?? true }
 }
 export function parseBackup(text: string) {
   if (new TextEncoder().encode(text).length > MAX_BACKUP_BYTES) throw new MessageError('backupTooLarge', '备份文件超过 500 KB。')

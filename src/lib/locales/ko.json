@@ -190,6 +190,8 @@
   "lightTheme": "밝게",
   "darkTheme": "어둡게",
   "loopPlayback": "재생목록 끝에서 연속 재생 반복",
+  "videoFrames": "썸네일 대신 동영상 프레임 표시",
+  "videoFramesHelp": "각 동영상의 중간 장면을 표시하여 주의를 끌거나 오해를 유발하는 썸네일의 영향을 줄입니다. 끄면 원래 썸네일로 돌아갑니다.",
   "hiddenVideos": "숨겨진 동영상",
   "noHiddenVideos": "숨겨진 동영상이 없습니다.",
   "videoRestored": "동영상이 복원되었습니다.",

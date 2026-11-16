@@ -190,6 +190,8 @@
   "lightTheme": "Deschisă",
   "darkTheme": "Întunecată",
   "loopPlayback": "Redare continuă în buclă la sfârșitul unei liste de redare",
+  "videoFrames": "Afișează cadre video în loc de miniaturi",
+  "videoFramesHelp": "Afișează un cadru din mijlocul fiecărui videoclip pentru a reduce miniaturile care distrag sau induc în eroare. Dezactivează pentru miniaturile originale.",
   "hiddenVideos": "Videoclipuri ascunse",
   "noHiddenVideos": "Fără videoclipuri ascunse.",
   "videoRestored": "Videoclipul a fost restaurat",

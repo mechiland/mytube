@@ -7,7 +7,7 @@ import { formatDate } from '@/lib/client'
 import type { Video } from '@/lib/data'
 import { saveFavorite, useLibrary } from '@/lib/personal'
 import { useLocale } from '@/lib/i18n'
-import { ChannelLink, Cover, videoLink } from './common'
+import { ChannelLink, VideoCover, videoLink } from './common'
 
 export default function VideoCard({ video, row, preserveContext }: { video: Video; row?: boolean; preserveContext?: boolean }) {
   const { t, locale } = useLocale()
@@ -15,7 +15,7 @@ export default function VideoCard({ video, row, preserveContext }: { video: Vide
   const saved = state.favorites.includes(video.id)
   const link = videoLink(video.id, preserveContext ? state.contexts[video.id] : undefined)
   return <article className={row ? 'video-card result-row' : 'video-card'}>
-    <Link {...link} aria-label={video.title} className="cover-link"><Cover url={video.thumbnail} duration={video.duration} /></Link>
+    <Link {...link} aria-label={video.title} className="cover-link"><VideoCover video={video} duration={video.duration} /></Link>
     <div className="video-meta">
       <div className="video-copy">
         <Link {...link} className="video-title">{video.title}</Link>

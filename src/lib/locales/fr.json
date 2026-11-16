@@ -190,6 +190,8 @@
   "lightTheme": "Clair",
   "darkTheme": "Sombre",
   "loopPlayback": "Lecture continue en boucle à la fin d'une liste de lecture",
+  "videoFrames": "Afficher des images de la vidéo plutôt que des miniatures",
+  "videoFramesHelp": "Affiche une image du milieu de chaque vidéo pour limiter les miniatures distrayantes ou trompeuses. Désactivez cette option pour retrouver les miniatures originales.",
   "hiddenVideos": "Vidéos cachées",
   "noHiddenVideos": "Aucune vidéo cachée.",
   "videoRestored": "Vidéo restaurée",

@@ -190,6 +190,8 @@
   "lightTheme": "Cerah",
   "darkTheme": "Gelap",
   "loopPlayback": "Gelung main balik berterusan pada penghujung senarai main",
+  "videoFrames": "Paparkan bingkai video menggantikan lakaran kecil",
+  "videoFramesHelp": "Paparkan bingkai dari pertengahan setiap video untuk mengurangkan lakaran kecil yang mengganggu atau mengelirukan. Matikan untuk memulihkan lakaran kecil asal.",
   "hiddenVideos": "Video tersembunyi",
   "noHiddenVideos": "Tiada video tersembunyi.",
   "videoRestored": "Video dipulihkan",

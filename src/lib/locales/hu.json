@@ -190,6 +190,8 @@
   "lightTheme": "Világos",
   "darkTheme": "Sötét",
   "loopPlayback": "Folyamatos lejátszás a lejátszási lista végén",
+  "videoFrames": "Videóképkockák megjelenítése bélyegképek helyett",
+  "videoFramesHelp": "Minden videó közepéről mutat egy képkockát a figyelemelterelő vagy félrevezető bélyegképek helyett. Kikapcsolva az eredeti bélyegképek jelennek meg.",
   "hiddenVideos": "Rejtett videók",
   "noHiddenVideos": "Nincsenek rejtett videók.",
   "videoRestored": "Videó visszaállítva",

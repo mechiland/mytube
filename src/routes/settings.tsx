@@ -4,6 +4,7 @@ import { useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Field, FieldContent, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { Switch } from '@/components/ui/switch'
 import { Loading, Notice, videoLink } from '@/components/app/common'
@@ -63,6 +64,16 @@ function Settings() {
           void update(s => ({ ...s, theme }))
         }}><NativeSelectOption value="system">{t('systemTheme')}</NativeSelectOption><NativeSelectOption value="light">{t('lightTheme')}</NativeSelectOption><NativeSelectOption value="dark">{t('darkTheme')}</NativeSelectOption></NativeSelect></div>
         <label className="settings-row"><span>{t('loopPlayback')}</span><Switch disabled={!ready} checked={state.loop} onCheckedChange={loop => void update(s => ({ ...s, loop }))} /></label>
+        <FieldGroup>
+          <Field orientation="horizontal" className="rounded-lg bg-muted p-4" data-disabled={!ready}>
+            <FieldContent>
+              <FieldLabel htmlFor="video-frames">{t('videoFrames')}</FieldLabel>
+              <FieldDescription id="video-frames-help" className="text-start">{t('videoFramesHelp')}</FieldDescription>
+            </FieldContent>
+            <Switch id="video-frames" aria-describedby="video-frames-help" disabled={!ready} checked={state.videoFrames}
+              onCheckedChange={videoFrames => void update(s => ({ ...s, videoFrames }))} />
+          </Field>
+        </FieldGroup>
       </section>
     {!ready ? <Loading /> : <>
       <section className="settings-section"><h2>{t('hiddenVideos')}</h2>

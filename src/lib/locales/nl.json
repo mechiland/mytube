@@ -190,6 +190,8 @@
   "lightTheme": "Licht",
   "darkTheme": "Donker",
   "loopPlayback": "Loop continu afspelen aan het einde van een afspeellijst",
+  "videoFrames": "Videobeelden tonen in plaats van miniaturen",
+  "videoFramesHelp": "Toont een beeld uit het midden van elke video om afleidende of misleidende miniaturen te beperken. Schakel uit om de oorspronkelijke miniaturen te herstellen.",
   "hiddenVideos": "Verborgen video's",
   "noHiddenVideos": "Geen verborgen video's.",
   "videoRestored": "Video hersteld",

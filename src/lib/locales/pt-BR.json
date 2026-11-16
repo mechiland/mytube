@@ -190,6 +190,8 @@
   "lightTheme": "Claro",
   "darkTheme": "Escuro",
   "loopPlayback": "Loop de reprodução contínua no final de uma lista de reprodução",
+  "videoFrames": "Mostrar quadros do vídeo em vez de miniaturas",
+  "videoFramesHelp": "Mostra um quadro do meio de cada vídeo para reduzir miniaturas que distraem ou enganam. Desative para restaurar as miniaturas originais.",
   "hiddenVideos": "Vídeos ocultos",
   "noHiddenVideos": "Sem vídeos ocultos.",
   "videoRestored": "Vídeo restaurado",
