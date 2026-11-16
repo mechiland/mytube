@@ -94,6 +94,9 @@ test.describe('server rendered pages', () => {
   test('hydrates cached video data without requesting the same video again', async ({ browser, baseURL }) => {
     const context = await browser.newContext({ javaScriptEnabled: true, locale: 'zh-CN', timezoneId: 'America/Los_Angeles' })
     const page = await context.newPage()
+    await page.route('https://i.ytimg.com/vi/ssrfixture1/hq2.jpg', route => route.fulfill({
+      contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360"/>',
+    }))
     await page.route('**/api/comments?**', route => route.fulfill({ json: { items: [] } }))
     const errors: string[] = []
     const videoRequests: string[] = []
