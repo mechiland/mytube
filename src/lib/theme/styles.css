@@ -968,10 +968,10 @@
 .ds-theme [data-slot=command-group-heading] {display:flex;align-items:center;height:var(--space-6);padding-inline:var(--space-3);font-size:var(--font-size-1);line-height:var(--line-height-1);color:var(--gray-a10);user-select:none}
 .ds-theme [data-slot=command-item] {height:var(--space-6);gap:var(--space-2);padding-inline:var(--space-3);border-radius:var(--radius-2);color:var(--gray-12);scroll-margin-block:var(--space-2)}
 .ds-theme [data-slot=command-item] svg {width:calc(16px * var(--scaling));height:calc(16px * var(--scaling));flex-shrink:0}
-.ds-theme [data-slot=command-item][data-highlighted] {background:var(--accent-9);color:var(--accent-contrast)}
-.ds-theme [data-slot=command-item][data-disabled] {color:var(--gray-a8)}
+.ds-theme [data-slot=command-item]:is([data-highlighted],[data-selected=true]) {background:var(--accent-9);color:var(--accent-contrast)}
+.ds-theme [data-slot=command-item]:is([data-disabled=''],[data-disabled=true]) {color:var(--gray-a8)}
 .ds-theme [data-slot=command-shortcut] {margin-left:auto;padding-left:var(--space-4);color:var(--gray-a11);font-size:inherit}
-.ds-theme [data-slot=command-item][data-highlighted] [data-slot=command-shortcut] {color:inherit}
+.ds-theme [data-slot=command-item]:is([data-highlighted],[data-selected=true]) [data-slot=command-shortcut] {color:inherit}
 .ds-theme [data-slot=command-separator] {height:1px;border:0;margin:var(--space-2) var(--space-3);background:var(--gray-a6)}
 .ds-theme [data-slot=command-empty] {padding:var(--space-6) var(--space-3);text-align:center;color:var(--gray-a11);font-size:var(--font-size-2)}
 .ds-theme [data-slot=command-empty]:empty {display:none}
